@@ -1397,9 +1397,15 @@ function update() {
     }
   }
 
+  // Apply movement one axis at a time — stops cleanly, no bounce
   cat.wx += ix * CAT_SPEED;
-  cat.wy += iy * CAT_SPEED;
   cat.wx = Math.max(TILE*1.1, Math.min(COLS*TILE - TILE*1.1, cat.wx));
+  if (catHitsWall(cat.wx, cat.wy)) cat.wx -= ix * CAT_SPEED;
+
+  cat.wy += iy * CAT_SPEED;
+  cat.wy = Math.max(TILE*1.1, Math.min(gs.R*TILE - TILE*1.1, cat.wy));
+  if (catHitsWall(cat.wx, cat.wy)) cat.wy -= iy * CAT_SPEED;
+
   resolveCollisions(cat);
 
   // Scratch cooldown
@@ -1442,11 +1448,41 @@ function update() {
   for (const c of gs.collectibles) {
     if (c.collected) continue;
     if (c.moveSpeed>0) {
-      c.wx += c.moveDir * c.moveSpeed;
-      if (c.wx<=c.moveMin||c.wx>=c.moveMax) c.moveDir*=-1;
-      if (Math.hypot(cat.wx-c.wx, cat.wy-c.wy)<90) {
-        c.moveDir = c.wx<cat.wx?-1:1;
-        c.wx += c.moveDir * c.moveSpeed * 1.5;
+      // Flee from cat when nearby
+      const mouseDist = Math.hypot(cat.wx-c.wx, cat.wy-c.wy);
+      const fleeing = mouseDist < 100;
+      const spd = c.moveSpeed * (fleeing ? 2.2 : 1);
+
+      // Try moving in current direction; also drift vertically for 2D roaming
+      if (!c.vy) c.vy = (Math.random()-0.5)*0.8;
+      if (fleeing) {
+        // Run directly away from cat
+        const fx = c.wx-cat.wx, fy = c.wy-cat.wy;
+        const fl = Math.hypot(fx,fy)||1;
+        c.wx += fx/fl * spd;
+        c.wy += fy/fl * spd;
+        c.moveDir = fx > 0 ? 1 : -1;
+      } else {
+        c.wx += c.moveDir * spd;
+        c.wy += c.vy;
+        // Occasionally change vertical drift
+        if (Math.random() < 0.01) c.vy = (Math.random()-0.5)*1.2;
+      }
+
+      // Check if mouse is now inside a solid tile — teleport to a random floor cell ("mouse hole")
+      const mgr = Math.floor(c.wy/TILE), mgc = Math.floor(c.wx/TILE);
+      const inWall = mgr<0||mgr>=gs.R||mgc<0||mgc>=COLS ||
+                     gs.grid[mgr][mgc]===1||gs.grid[mgr][mgc]===2||gs.grid[mgr][mgc]===3;
+      const outOfBounds = c.wx<TILE||c.wx>(COLS-1)*TILE||c.wy<TILE||c.wy>(gs.R-1)*TILE;
+      if (inWall||outOfBounds) {
+        // Mouse pops out of a random floor tile (mouse hole!)
+        const floorCells=[];
+        for(let r=2;r<gs.R-2;r++) for(let cc=1;cc<COLS-1;cc++) if(gs.grid[r][cc]===0) floorCells.push({r,cc});
+        if(floorCells.length>0){
+          const pick=floorCells[Math.floor(Math.random()*floorCells.length)];
+          c.wx=pick.cc*TILE+TILE/2; c.wy=pick.r*TILE+TILE/2;
+        }
+        c.moveDir*=-1; c.vy=(Math.random()-0.5)*0.8;
       }
     }
     if (Math.hypot(cat.wx-c.wx, cat.wy-c.wy)<20) {
@@ -1461,33 +1497,57 @@ function update() {
   updateHUD();
 }
 
+// Returns true if the cat circle at (wx,wy) overlaps any solid tile
+function catHitsWall(wx, wy) {
+  const R2 = 13;
+  const probes = [[R2,0],[-R2,0],[0,R2],[0,-R2],[R2,R2*.7],[-R2,R2*.7],[R2,-R2*.7],[-R2,-R2*.7]];
+  for (const [dx,dy] of probes) {
+    const gr = Math.floor((wy+dy)/TILE);
+    const gc = Math.floor((wx+dx)/TILE);
+    if (gr<0||gr>=gs.R||gc<0||gc>=COLS) return true;
+    const t = gs.grid[gr][gc];
+    if (t===1||t===2||t===3) return true;
+  }
+  return false;
+}
+
 function resolveCollisions(cat) {
   const R2 = 13;
-  const corners = [[R2,0],[-R2,0],[0,R2],[0,-R2],[R2,R2],[-R2,-R2],[R2,-R2],[-R2,R2]];
-  for (const [dx,dy] of corners) {
-    const gr = Math.floor((cat.wy+dy)/TILE);
-    const gc = Math.floor((cat.wx+dx)/TILE);
-    if (gr<0||gr>=gs.R||gc<0||gc>=COLS) continue;
-    const tile = gs.grid[gr][gc];
-    if (tile===1||tile===2||tile===3) {
-      const ox=cat.wx-dx, oy=cat.wy-dy;
-      const olapX=Math.abs(cat.wx-(gc*TILE+TILE/2))-TILE/2-1;
-      const olapY=Math.abs(cat.wy-(gr*TILE+TILE/2))-TILE/2-1;
-      if (olapX>olapY) cat.wx=ox; else cat.wy=oy;
+  // Fine-grain snap: push cat out of any overlapping solid tile
+  const probes = [[R2,0],[-R2,0],[0,R2],[0,-R2],[R2,R2*.7],[-R2,R2*.7],[R2,-R2*.7],[-R2,-R2*.7]];
+  for (let pass=0; pass<3; pass++) {
+    for (const [dx,dy] of probes) {
+      const gr = Math.floor((cat.wy+dy)/TILE);
+      const gc = Math.floor((cat.wx+dx)/TILE);
+      if (gr<0||gr>=gs.R||gc<0||gc>=COLS) continue;
+      const tile = gs.grid[gr][gc];
+      if (tile!==1&&tile!==2&&tile!==3) continue;
+      // Compute overlap and push out along minimum axis
+      const tileX = gc*TILE + TILE/2, tileY = gr*TILE + TILE/2;
+      const overlapX = (R2 + TILE/2) - Math.abs(cat.wx - tileX);
+      const overlapY = (R2 + TILE/2) - Math.abs(cat.wy - tileY);
+      if (overlapX > 0 && overlapY > 0) {
+        if (overlapX < overlapY) {
+          cat.wx += cat.wx < tileX ? -overlapX : overlapX;
+        } else {
+          cat.wy += cat.wy < tileY ? -overlapY : overlapY;
+        }
+      }
     }
   }
-  // Also check solid interactables (boxes/luggage that are still active)
+  // Solid interactables (unbroken boxes/luggage)
   for (const obj of gs.interactables) {
     if (obj.type==='movingPlatform'||!obj.active||obj.broken) continue;
     if (obj.type!=='box'&&obj.type!=='luggage') continue;
     const dx2=cat.wx-obj.wx, dy2=cat.wy-obj.wy;
-    if (Math.abs(dx2)<TILE*0.7&&Math.abs(dy2)<TILE*0.7) {
-      if (Math.abs(dx2)>Math.abs(dy2)) cat.wx+=dx2>0?2:-2;
-      else cat.wy+=dy2>0?2:-2;
+    const half = TILE*0.55;
+    if (Math.abs(dx2)<half && Math.abs(dy2)<half) {
+      if (Math.abs(dx2) >= Math.abs(dy2)) cat.wx = obj.wx + (dx2>0?half:-half);
+      else cat.wy = obj.wy + (dy2>0?half:-half);
     }
   }
-  cat.wx=Math.max(TILE+R2,Math.min((COLS-1)*TILE-R2,cat.wx));
-  cat.wy=Math.max(TILE+R2,Math.min((gs.R-1)*TILE-R2,cat.wy));
+  cat.wx = Math.max(TILE+R2, Math.min((COLS-1)*TILE-R2, cat.wx));
+  cat.wy = Math.max(TILE+R2, Math.min((gs.R-1)*TILE-R2, cat.wy));
 }
 
 function updateDogs() {
