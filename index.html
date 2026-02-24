@@ -930,6 +930,7 @@ const LEVEL_DEFS = [
     wallFill:'#bcaaa4', elevFill:'#fff9f0', elevStroke:'#ffb3a0',
     completeTxt:'You found the cat door! 🐱🏠', dogCount:3,
     collectEmojis:['🐟','🥛','🍣','🧶','🪆'],
+    secretEmojis:['🐠','🧸','💎'],
     doorStyle:'home',
   },
   { name:'Neighbourhood Park', icon:'🌳', theme:'park', rows:36,
@@ -937,6 +938,7 @@ const LEVEL_DEFS = [
     wallFill:'#388e3c', elevFill:'#e8f5e9', elevStroke:'#66bb6a',
     completeTxt:'You reached the park gate! 🌳🌸', dogCount:4,
     collectEmojis:['🍎','🐟','🌸','🎾','🍂'],
+    secretEmojis:['🦋','🍄','🪺'],
     doorStyle:'park',
   },
   { name:'The Big Building', icon:'🏢', theme:'building', rows:40,
@@ -944,6 +946,7 @@ const LEVEL_DEFS = [
     wallFill:'#607d8b', elevFill:'#eceff1', elevStroke:'#78909c',
     completeTxt:'Rooftop reached! 🏢✨', dogCount:5,
     collectEmojis:['🍱','🥫','⭐','🔮','💎'],
+    secretEmojis:['📀','🎁','🔮'],
     doorStyle:'building',
   },
   { name:'Train Station', icon:'🚉', theme:'station', rows:44,
@@ -951,6 +954,7 @@ const LEVEL_DEFS = [
     wallFill:'#5e35b1', elevFill:'#ede7f6', elevStroke:'#9575cd',
     completeTxt:'All aboard! 🚉🎊', dogCount:5,
     collectEmojis:['🍙','🍜','🎫','🧸','🚄'],
+    secretEmojis:['🎟️','📿','🗝️'],
     doorStyle:'station',
   },
 ];
@@ -1103,6 +1107,59 @@ const DOG_BREEDS = {
 // ═══════════════════════════════════════════════════════════════
 // BEGIN LEVEL
 // ═══════════════════════════════════════════════════════════════
+// ── Spawn capybara boss ──
+function spawnCapybara(floorCells, R, rng) {
+  // Spawn in upper half of level
+  const zone = floorCells.filter(p => p.r > 3 && p.r < Math.floor(R * 0.55));
+  const cell = zone[Math.floor(rng() * zone.length)] || {r:5, c:5};
+  return {
+    wx: cell.c*TILE + TILE/2,
+    wy: cell.r*TILE + TILE/2,
+    state: 'wander',          // wander | befriended | sitting
+    hitsLeft: 3,
+    hitCooldown: 0,
+    stunTick: 0,
+    wanderAngle: rng()*Math.PI*2,
+    wanderTimer: 100 + Math.floor(rng()*80),
+    speed: 0.35,
+    happyAnim: 0,             // plays on each hit
+    sitTick: 0,               // countdown after fully befriended
+  };
+}
+
+// ── Spawn secrets ──
+function spawnSecrets(def, floorCells, usedC, R, rng) {
+  const secrets = [];
+  const emojis = def.secretEmojis || ['💎','⭐','🌟'];
+  // Place in varied areas of the level
+  const zones = [
+    floorCells.filter(p => p.r > Math.floor(R*0.15) && p.r < Math.floor(R*0.4)),
+    floorCells.filter(p => p.r > Math.floor(R*0.4)  && p.r < Math.floor(R*0.65)),
+    floorCells.filter(p => p.r > Math.floor(R*0.65) && p.r < Math.floor(R*0.88)),
+  ];
+  for (let i = 0; i < 3; i++) {
+    const zone = zones[i];
+    if (!zone || zone.length === 0) continue;
+    let cell;
+    for (let a = 0; a < 30; a++) {
+      cell = zone[Math.floor(rng() * zone.length)];
+      if (cell && !usedC.has(`${cell.r},${cell.c}`)) break;
+    }
+    if (!cell) continue;
+    usedC.add(`${cell.r},${cell.c}`);
+    secrets.push({
+      emoji: emojis[i % emojis.length],
+      wx: cell.c*TILE + TILE/2,
+      wy: cell.r*TILE + TILE/2,
+      collected: false,
+      revealed: false,
+      bob: rng()*Math.PI*2,
+      pts: 100,
+    });
+  }
+  return secrets;
+}
+
 function beginLevel(idx) {
   stopPreviewAnim();
   currentLevel = idx;
@@ -1143,7 +1200,7 @@ function beginLevel(idx) {
     else if (roll < 0.86) { type='goldenmouse'; emoji='🐭'; pts=200; en=30; }
     else                  { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=3; en=5; }
     const isMouse = type==='mouse'||type==='goldenmouse';
-    const spd = isMouse ? (type==='goldenmouse' ? 2.2:1.4) : 0;
+    const spd = isMouse ? (type==='goldenmouse' ? 1.1:0.7) : 0;
     collectibles.push({
       type,emoji,pts,en,collected:false,
       wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
@@ -1179,6 +1236,12 @@ function beginLevel(idx) {
   // Interactables
   const interactables = generateInteractables(idx, grid, R, rng);
 
+  // ── Capybara boss (one per level) ──
+  const capy = spawnCapybara(floorCells, R, rng);
+
+  // ── Secret collectibles (3 per level, hidden) ──
+  const secrets = spawnSecrets(def, floorCells, usedC, R, rng);
+
   gs = {
     running:true, time:0, score:0, energy:100,
     energyTick:0, hasKey:false, doorShake:0,
@@ -1191,7 +1254,7 @@ function beginLevel(idx) {
     },
     key:{wx:keyCell.c*TILE+TILE/2, wy:keyCell.r*TILE+TILE/2, collected:false},
     door:{wx:(4.5)*TILE + TILE/2, wy:TILE*1.4},
-    collectibles, dogs, interactables,
+    collectibles, dogs, interactables, capy, secrets,
     particles:[],
     joystick:{active:false,dx:0,dy:0},
     scratchPressed:false,
@@ -1286,6 +1349,36 @@ function checkScratchHits() {
     } else {
       dog.stunTick = 50; dog.hitCooldown = 80;
       spawnPop(dog.wx, dog.wy, '⚡ One more!', '#ffd700');
+    }
+  }
+
+  // Check capybara
+  if (gs.capy && gs.capy.state !== 'sitting') {
+    const dx=gs.capy.wx-cat.wx, dy=gs.capy.wy-cat.wy;
+    const dist=Math.hypot(dx,dy);
+    if (dist <= SCRATCH_RANGE && gs.capy.hitCooldown===0) {
+      const angle=Math.atan2(dy,dx);
+      const fa2 = cat.facingAngle - Math.PI/2;
+      const diff=Math.abs(normaliseAngle(angle-fa2));
+      if (diff <= SCRATCH_ARC/2) {
+        gs.capy.hitsLeft--;
+        gs.capy.hitCooldown = 90;
+        gs.capy.happyAnim = 40;
+        playWoof(); playHit();
+        const faces = ['😐','🙂','😊','🥰'];
+        const faceIdx = 3 - gs.capy.hitsLeft;
+        spawnPop(gs.capy.wx, gs.capy.wy, faces[Math.min(faceIdx,3)], '#f8bbd0');
+        if (gs.capy.hitsLeft <= 0) {
+          gs.capy.state = 'sitting';
+          gs.capy.sitTick = 0;
+          gs.score += 150;
+          gs.energy = Math.min(100, gs.energy + 40);
+          spawnPop(gs.capy.wx, gs.capy.wy, '🥰 +150! Friend!', '#f48fb1');
+          spawnParticles(gs.capy.wx, gs.capy.wy, '🌸');
+          spawnParticles(gs.capy.wx+20, gs.capy.wy-10, '✨');
+          spawnParticles(gs.capy.wx-20, gs.capy.wy+10, '💖');
+        }
+      }
     }
   }
 
@@ -1451,7 +1544,7 @@ function update() {
       // Flee from cat when nearby
       const mouseDist = Math.hypot(cat.wx-c.wx, cat.wy-c.wy);
       const fleeing = mouseDist < 100;
-      const spd = c.moveSpeed * (fleeing ? 2.2 : 1);
+      const spd = c.moveSpeed * (fleeing ? 1.3 : 1);
 
       // Try moving in current direction; also drift vertically for 2D roaming
       if (!c.vy) c.vy = (Math.random()-0.5)*0.8;
@@ -1494,7 +1587,58 @@ function update() {
   }
 
   updateDogs();
+  updateCapybara();
+  updateSecrets();
   updateHUD();
+}
+
+function updateCapybara() {
+  const capy = gs.capy; if (!capy) return;
+  const cat = gs.cat;
+  if (capy.hitCooldown > 0) capy.hitCooldown--;
+  if (capy.stunTick > 0) { capy.stunTick--; return; }
+  if (capy.happyAnim > 0) capy.happyAnim--;
+
+  if (capy.state === 'sitting') {
+    capy.sitTick++;
+    return; // just sits there looking happy
+  }
+
+  // Very slow gentle wander — never chases
+  capy.wanderTimer--;
+  if (capy.wanderTimer <= 0) {
+    capy.wanderAngle += (Math.random()-0.5)*0.8;
+    capy.wanderTimer = 120 + Math.floor(Math.random()*160);
+  }
+  capy.wx += Math.cos(capy.wanderAngle) * capy.speed * 0.3;
+  capy.wy += Math.sin(capy.wanderAngle) * capy.speed * 0.3;
+  capy.wx = Math.max(TILE*1.5, Math.min((COLS-1)*TILE-TILE*1.5, capy.wx));
+  capy.wy = Math.max(TILE*1.5, Math.min((gs.R-1)*TILE-TILE*1.5, capy.wy));
+
+  // Gentle nudge on contact (no drain)
+  const dist = Math.hypot(cat.wx-capy.wx, cat.wy-capy.wy);
+  if (dist < 32) {
+    const nx=(cat.wx-capy.wx)/(dist||1), ny=(cat.wy-capy.wy)/(dist||1);
+    cat.wx += nx*1.5; cat.wy += ny*1.5;
+  }
+}
+
+function updateSecrets() {
+  if (!gs.secrets) return;
+  const cat = gs.cat;
+  for (const s of gs.secrets) {
+    if (s.collected) continue;
+    const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+    if (dist < 30) s.revealed = true;
+    if (dist < 20 && s.revealed) {
+      s.collected = true;
+      gs.score += s.pts;
+      playKeyPickup(); // nice chime for secret find
+      spawnPop(s.wx, s.wy, `🔍 SECRET! +${s.pts}`, '#ffd700');
+      spawnParticles(s.wx, s.wy, '✨');
+      spawnParticles(s.wx, s.wy, s.emoji);
+    }
+  }
 }
 
 // Returns true if the cat circle at (wx,wy) overlaps any solid tile
@@ -1621,6 +1765,12 @@ function render() {
 
   // Dogs
   for (const dog of gs.dogs) if (dog.state!=='gone') drawDogTopDown(dog, gs.time, gs.cat);
+
+  // Capybara
+  if (gs.capy) drawCapybara(gs.capy, gs.time);
+
+  // Secrets (hidden until near)
+  if (gs.secrets) for (const s of gs.secrets) if (!s.collected) drawSecret(s, gs.time, gs.cat);
 
   // Cat
   drawCatTopDown(ctx, gs.cat.wx, gs.cat.wy, catCfg, gs.time, gs.cat.facingAngle, gs.cat.moving, gs.cat.scratchCooldown);
@@ -1838,6 +1988,160 @@ function drawDogTopDown(dog,t,cat) {
   ctx.restore();
 }
 
+
+function drawCapybara(capy, t) {
+  const sitting = capy.state === 'sitting';
+  const happy = capy.happyAnim > 0;
+  const faces = ['😐','🙂','😊','🥰'];
+  const faceIdx = Math.min(3 - capy.hitsLeft, 3);
+  const wobble = sitting ? 0 : Math.sin(t*0.08)*1.5;
+
+  ctx.save();
+  ctx.translate(capy.wx, capy.wy + wobble);
+
+  // Glow aura when befriended
+  if (sitting) {
+    ctx.save();
+    ctx.globalAlpha = 0.18 + Math.sin(t*0.07)*0.08;
+    ctx.fillStyle = '#f48fb1';
+    ctx.beginPath(); ctx.arc(0, 0, 38, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.beginPath(); ctx.ellipse(0, 4, sitting?22:18, sitting?10:8, 0, 0, Math.PI*2); ctx.fill();
+
+  // Body — big rounded rectangle, capybaras are chonky
+  const bw = sitting ? 28 : 24, bh = sitting ? 16 : 20;
+  ctx.fillStyle = '#8d6e3a'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.ellipse(0, sitting?2:0, bw, bh, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Fur highlight
+  ctx.fillStyle = 'rgba(255,220,150,0.2)';
+  ctx.beginPath(); ctx.ellipse(-4, sitting?-2:-4, bw*0.6, bh*0.5, -0.3, 0, Math.PI*2); ctx.fill();
+
+  // Legs (four stubby ones)
+  ctx.fillStyle = '#7a5c28'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=1.5;
+  if (!sitting) {
+    const legBob = Math.sin(t*0.18)*4;
+    [[-16,12],[16,12],[-16,-4],[16,-4]].forEach(([lx,ly],i)=>{
+      ctx.beginPath(); ctx.ellipse(lx, ly+(i%2===0?legBob:-legBob), 6, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    });
+  } else {
+    // Sitting — legs tucked
+    [[-18,10],[18,10],[-14,14],[14,14]].forEach(([lx,ly])=>{
+      ctx.beginPath(); ctx.ellipse(lx,ly,7,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    });
+  }
+
+  // Head
+  ctx.fillStyle = '#8d6e3a'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.ellipse(0, -20, 15, 12, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Nose/snout (capybaras have a distinctive wide snout)
+  ctx.fillStyle = '#a0784a';
+  ctx.beginPath(); ctx.ellipse(0, -17, 10, 7, 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0, -17, 10, 7, 0, 0, Math.PI*2); ctx.stroke();
+
+  // Nostrils
+  ctx.fillStyle = '#5a3810';
+  ctx.beginPath(); ctx.arc(-3, -16, 2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3, -16, 2, 0, Math.PI*2); ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = '#3e2206';
+  ctx.beginPath(); ctx.arc(-6, -23, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(6, -23, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='white';
+  ctx.beginPath(); ctx.arc(-5,-24,1.3,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(7,-24,1.3,0,Math.PI*2); ctx.fill();
+
+  // Ears (small rounded)
+  ctx.fillStyle='#8d6e3a'; ctx.strokeStyle='#6d4c18'; ctx.lineWidth=2;
+  [[-10,-30],[10,-30]].forEach(([ex,ey])=>{
+    ctx.beginPath(); ctx.ellipse(ex,ey,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  });
+
+  // Blush when happy / hit
+  if (faceIdx > 0 || sitting) {
+    ctx.globalAlpha = 0.35 + (sitting?Math.sin(t*0.08)*0.1:0);
+    ctx.fillStyle = '#f48fb1';
+    ctx.beginPath(); ctx.ellipse(-8,-21,5,3,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(8,-21,5,3,0,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  // Face emoji above head
+  const faceEmoji = sitting ? '🥰' : faces[faceIdx];
+  const faceScale = happy ? 1.1+Math.sin(capy.happyAnim*0.3)*0.15 : 1;
+  ctx.save(); ctx.scale(faceScale, faceScale);
+  ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(faceEmoji, 0, -38/faceScale);
+  ctx.restore();
+
+  // Hit count pips
+  if (!sitting && capy.hitsLeft > 0) {
+    ctx.font='9px serif'; ctx.textAlign='center';
+    for (let h=0; h<capy.hitsLeft; h++) ctx.fillText('❤️', -8+h*10, -48);
+  }
+
+  // Stunned stars
+  if (capy.stunTick>0) {
+    ctx.font='12px serif'; ctx.textAlign='center';
+    ctx.fillText('💫', Math.sin(t*0.3)*6, -52);
+  }
+
+  // Floating hearts when sitting
+  if (sitting && capy.sitTick < 200) {
+    ctx.globalAlpha = Math.max(0, 1-(capy.sitTick/200));
+    ctx.font='14px serif';
+    ctx.fillText('💖', Math.sin(capy.sitTick*0.05)*12, -50 - capy.sitTick*0.15);
+    ctx.globalAlpha=1;
+  }
+
+  ctx.restore();
+}
+
+function drawSecret(s, t, cat) {
+  const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+  const nearbyFactor = Math.max(0, 1-(dist/80)); // shimmer builds as you approach
+
+  ctx.save();
+  ctx.translate(s.wx, s.wy);
+
+  if (s.revealed) {
+    // Fully revealed — pulse and glow
+    const pulse = 0.85 + Math.sin(t*0.1+s.bob)*0.18;
+    ctx.save(); ctx.scale(pulse, pulse);
+    ctx.shadowColor='#ffd700'; ctx.shadowBlur=14+Math.sin(t*0.1)*6;
+    ctx.globalAlpha=1;
+    ctx.font='22px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(s.emoji, 0, 0);
+    ctx.restore();
+    // Gold ring
+    ctx.globalAlpha=0.4+Math.sin(t*0.12)*0.2;
+    ctx.strokeStyle='#ffd700'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.stroke();
+    ctx.globalAlpha=1;
+    // "SECRET" label
+    ctx.font='bold 8px Nunito,sans-serif';
+    ctx.fillStyle='#ffd700'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('SECRET',0,-22);
+  } else if (nearbyFactor > 0) {
+    // Subtle shimmer hint when nearby — just barely visible
+    ctx.globalAlpha = nearbyFactor * 0.35;
+    ctx.fillStyle='#ffd700';
+    // Sparkle particles at item location
+    ctx.font='10px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    const sparkAngle = t*0.08 + s.bob;
+    ctx.fillText('✨', Math.cos(sparkAngle)*10, Math.sin(sparkAngle)*10);
+    ctx.fillText('✨', Math.cos(sparkAngle+Math.PI)*8, Math.sin(sparkAngle+Math.PI)*8);
+    ctx.globalAlpha=1;
+  }
+  ctx.restore();
+}
 function drawParticles() {
   gs.particles=gs.particles.filter(p=>p.life>0);
   for (const p of gs.particles) {
