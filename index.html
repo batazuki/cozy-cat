@@ -214,9 +214,6 @@ html,body{
   box-shadow:0 2px 8px var(--shadow);
   font-size:11px;font-weight:700;color:var(--text);
 }
-.hud-pill.energy{flex:1;}
-.energy-bar-bg{flex:1;height:8px;background:#fce4ec;border-radius:6px;overflow:hidden;min-width:40px;}
-#energy-bar{height:100%;border-radius:6px;transition:width .3s,background .3s;background:linear-gradient(90deg,#f48fb1,#f06292);}
 #score-val{font-size:13px;font-weight:900;color:var(--text);}
 #key-indicator{font-size:14px;}
 #diff-badge-hud{font-size:10px;font-weight:900;padding:2px 7px;border-radius:12px;}
@@ -306,7 +303,8 @@ html,body{
 <div class="screen" id="title-screen">
   <div id="title-cat-preview"><canvas id="titleCatCanvas" width="130" height="130"></canvas></div>
   <div class="title-logo">Neko Day ✨</div>
-  <div class="title-sub">A cozy top-down cat adventure!<br>Find the 🗝️ key · scratch 🐾 dogs away · collect treats</div>
+  <div class="title-sub">A cozy top-down cat adventure!<br>Find the 🗝️ key · give treats 🦴 to dogs · befriend everyone!</div>
+      <div style="position:absolute;top:14px;right:14px;"><button class="btn btn-grey" style="padding:6px 14px;font-size:13px;" onclick="toggleMusic()" title="Toggle music">🎵 Music</button></div>
   <button class="btn" onclick="showScreen('custom-screen')">Customize Your Cat 🐱</button>
   <button class="btn btn-grey btn-sm" style="margin-top:-4px" onclick="quickPlay()">Quick Play →</button>
 </div>
@@ -380,28 +378,28 @@ html,body{
       <div class="diff-icon-big">🌸</div>
       <div class="diff-card-text">
         <div class="diff-card-name">Easy</div>
-        <div class="diff-card-desc">Slow lazy dogs · gentle energy drain · cozy vibes</div>
+        <div class="diff-card-desc">Slow lazy dogs · treats work easily · max cozy vibes</div>
       </div>
     </div>
     <div class="diff-card normal" data-diff="normal" onclick="selectDiff('normal')">
       <div class="diff-icon-big">⭐</div>
       <div class="diff-card-text">
         <div class="diff-card-name">Normal</div>
-        <div class="diff-card-desc">Balanced fun · dogs patrol normally</div>
+        <div class="diff-card-desc">Balanced fun · dogs need the right treats</div>
       </div>
     </div>
     <div class="diff-card hard" data-diff="hard" onclick="selectDiff('hard')">
       <div class="diff-icon-big">🔥</div>
       <div class="diff-card-text">
         <div class="diff-card-name">Hard</div>
-        <div class="diff-card-desc">Frisky dogs · faster drain · bring snacks!</div>
+        <div class="diff-card-desc">Frisky dogs · picky eaters · bring plenty!</div>
       </div>
     </div>
     <div class="diff-card paws" data-diff="paws" onclick="selectDiff('paws')">
       <div class="diff-icon-big">🐾</div>
       <div class="diff-card-text">
         <div class="diff-card-name">Paws of Fury</div>
-        <div class="diff-card-desc">Maximum chaos · for brave cats only</div>
+        <div class="diff-card-desc">Maximum chaos · very picky dogs · good luck!</div>
       </div>
     </div>
   </div>
@@ -474,13 +472,12 @@ html,body{
 <!-- HUD -->
 <div id="hud">
   <div class="hud-row">
-    <div class="hud-pill energy">
-      <span style="font-size:13px">🍣</span>
-      <div class="energy-bar-bg"><div id="energy-bar"></div></div>
-    </div>
     <div class="hud-pill">⭐ <span id="score-val">0</span></div>
     <div class="hud-pill"><span id="key-indicator">🔑 ✗</span></div>
+    <div class="hud-pill" id="treat-hud"><span id="treat-display">🦴×0</span></div>
+    <div class="hud-pill" id="happy-hud" style="display:none"><span id="happy-display">🌈</span></div>
     <div class="hud-pill"><span id="diff-badge-hud" class="normal">⭐</span></div>
+    <div class="hud-pill" style="cursor:pointer;padding:4px 10px;" onclick="toggleMusic()" id="music-toggle-btn" title="Music: On">🎵</div>
   </div>
 </div>
 
@@ -643,6 +640,41 @@ function playWoof() {
   } catch(e) {}
 }
 
+function playDash() {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    const f = ac.createBiquadFilter(); f.type='highpass'; f.frequency.value=300;
+    o.type='sawtooth';
+    o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(200,t+0.12);
+    g.gain.setValueAtTime(0.18,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.14);
+    o.connect(f); f.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.15);
+  } catch(e){}
+}
+
+function playPurr() {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    // Low rumble oscillating — purring
+    const o1 = ac.createOscillator(), o2 = ac.createOscillator();
+    const lfo = ac.createOscillator(), lfoG = ac.createGain();
+    const g = ac.createGain();
+    o1.type='sine'; o1.frequency.value=55;
+    o2.type='sine'; o2.frequency.value=60;
+    lfo.type='sine'; lfo.frequency.value=28; // purr rate
+    lfoG.gain.value=20;
+    lfo.connect(lfoG); lfoG.connect(o1.frequency); lfoG.connect(o2.frequency);
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.22,t+0.1);
+    g.gain.setValueAtTime(0.22,t+0.55);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.75);
+    o1.connect(g); o2.connect(g); g.connect(ac.destination);
+    o1.start(t); o1.stop(t+0.8);
+    o2.start(t); o2.stop(t+0.8);
+    lfo.start(t); lfo.stop(t+0.8);
+  } catch(e){}
+}
+
 function playPlatformStart() {
   try {
     const ac = getAudio(), t = ac.currentTime;
@@ -653,6 +685,267 @@ function playPlatformStart() {
   } catch(e) {}
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// COZY JAPANESE MUSIC ENGINE
+// Procedural pentatonic koto/shakuhachi-inspired ambient music
+// ═══════════════════════════════════════════════════════════════
+let musicCtx = null, musicPlaying = false, musicEnabled = true;
+let musicNodes = []; // track active nodes for cleanup
+
+// Japanese pentatonic scale (A minor pentatonic) in Hz
+// 音階: A3, C4, D4, E4, G4, A4, C5, D5, E5, G5
+const PENTATONIC = [220.0, 261.6, 293.7, 329.6, 392.0, 440.0, 523.3, 587.3, 659.3, 784.0];
+
+// Melodic phrases — indices into PENTATONIC
+const PHRASES = [
+  [5,4,3,2,1,0,2,3],       // falling
+  [0,2,3,5,4,3,2,0],       // arch
+  [5,5,4,3,5,4,2,0],       // ornamental
+  [3,4,5,4,3,2,3,2],       // winding
+  [0,3,2,0,2,3,5,4],       // rising
+  [5,4,3,5,3,2,0,2],       // meditative
+];
+
+function getMusicCtx() {
+  if (!musicCtx) {
+    musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (musicCtx.state === 'suspended') musicCtx.resume();
+  return musicCtx;
+}
+
+// Master gain for music (separate from SFX)
+let masterGain = null;
+function getMasterGain() {
+  if (!masterGain) {
+    const ac = getMusicCtx();
+    masterGain = ac.createGain();
+    masterGain.gain.value = 0.0;
+    masterGain.connect(ac.destination);
+  }
+  return masterGain;
+}
+
+// Reverb convolver for lush room sound
+let reverbNode = null;
+async function getReverb() {
+  if (reverbNode) return reverbNode;
+  const ac = getMusicCtx();
+  reverbNode = ac.createConvolver();
+  // Generate synthetic impulse response (room reverb)
+  const len = ac.sampleRate * 2.8;
+  const buf = ac.createBuffer(2, len, ac.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      const decay = Math.pow(1 - i/len, 2.2);
+      d[i] = (Math.random()*2-1) * decay * (i < ac.sampleRate*0.01 ? 0 : 1);
+    }
+  }
+  reverbNode.buffer = buf;
+  reverbNode.connect(getMasterGain());
+  return reverbNode;
+}
+
+// Koto-like pluck: sine + triangle blend, fast attack, long decay
+function playKotoNote(freq, startTime, duration, gain=0.22, reverb=null) {
+  try {
+    const ac = getMusicCtx();
+    const osc1 = ac.createOscillator();
+    const osc2 = ac.createOscillator();
+    const g = ac.createGain();
+    const filter = ac.createBiquadFilter();
+
+    osc1.type = 'triangle'; osc1.frequency.value = freq;
+    osc2.type = 'sine';     osc2.frequency.value = freq * 2.003; // slight detune for shimmer
+    filter.type = 'lowpass'; filter.frequency.setValueAtTime(3000, startTime);
+    filter.frequency.exponentialRampToValueAtTime(800, startTime + duration*0.4);
+
+    // Pluck envelope: very fast attack, exponential decay (koto character)
+    g.gain.setValueAtTime(0, startTime);
+    g.gain.linearRampToValueAtTime(gain, startTime + 0.008);
+    g.gain.exponentialRampToValueAtTime(gain * 0.3, startTime + duration * 0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+    osc1.connect(filter); osc2.connect(filter); filter.connect(g);
+    if (reverb) g.connect(reverb);
+    g.connect(getMasterGain());
+
+    osc1.start(startTime); osc1.stop(startTime + duration + 0.1);
+    osc2.start(startTime); osc2.stop(startTime + duration + 0.1);
+    musicNodes.push(osc1, osc2);
+  } catch(e) {}
+}
+
+// Shakuhachi-like breathy tone: sine + slight noise + vibrato
+function playFluteNote(freq, startTime, duration, gain=0.12) {
+  try {
+    const ac = getMusicCtx();
+    const osc = ac.createOscillator();
+    const vibLfo = ac.createOscillator();
+    const vibGain = ac.createGain();
+    const noiseNode = ac.createOscillator(); // second osc for breath texture
+    const g = ac.createGain();
+    const filter = ac.createBiquadFilter();
+
+    osc.type = 'sine'; osc.frequency.value = freq;
+    vibLfo.type = 'sine'; vibLfo.frequency.value = 5.2; // natural vibrato rate
+    vibGain.gain.value = freq * 0.012; // subtle vibrato depth
+    vibLfo.connect(vibGain); vibGain.connect(osc.frequency);
+
+    noiseNode.type = 'sawtooth'; noiseNode.frequency.value = freq * 1.01;
+    filter.type = 'bandpass'; filter.frequency.value = freq * 1.5; filter.Q.value = 8;
+
+    // Breath envelope: slow attack, long sustain
+    g.gain.setValueAtTime(0, startTime);
+    g.gain.linearRampToValueAtTime(gain, startTime + duration*0.18);
+    g.gain.setValueAtTime(gain, startTime + duration*0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+    const ng = ac.createGain(); ng.gain.value = gain * 0.18;
+    noiseNode.connect(filter); filter.connect(ng); ng.connect(g);
+    osc.connect(g); g.connect(getMasterGain());
+
+    osc.start(startTime); osc.stop(startTime + duration + 0.05);
+    noiseNode.start(startTime); noiseNode.stop(startTime + duration + 0.05);
+    vibLfo.start(startTime); vibLfo.stop(startTime + duration + 0.05);
+    musicNodes.push(osc, vibLfo, noiseNode);
+  } catch(e) {}
+}
+
+// Low drum (taiko-ish): noise burst + low sine thud
+function playDrum(startTime, gain=0.14) {
+  try {
+    const ac = getMusicCtx();
+    const buf = ac.createBuffer(1, ac.sampleRate * 0.25, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i=0; i<d.length; i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/d.length,1.6);
+    const src = ac.createBufferSource();
+    const osc = ac.createOscillator(); // thud body
+    const g1 = ac.createGain(), g2 = ac.createGain();
+    const f = ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=180;
+
+    src.buffer = buf;
+    osc.type='sine'; osc.frequency.setValueAtTime(80,startTime); osc.frequency.exponentialRampToValueAtTime(40,startTime+0.12);
+    g1.gain.setValueAtTime(gain*0.7,startTime); g1.gain.exponentialRampToValueAtTime(0.0001,startTime+0.22);
+    g2.gain.setValueAtTime(gain,startTime); g2.gain.exponentialRampToValueAtTime(0.0001,startTime+0.14);
+
+    src.connect(f); f.connect(g1); g1.connect(getMasterGain());
+    osc.connect(g2); g2.connect(getMasterGain());
+
+    src.start(startTime); osc.start(startTime); osc.stop(startTime+0.28);
+    musicNodes.push(osc);
+  } catch(e){}
+}
+
+// Schedule one "bar" of music
+let musicScheduleId = null;
+let nextBarTime = 0;
+const BAR_DURATION = 3.2; // seconds per bar — slow, meditative tempo
+let currentPhraseIdx = 0;
+let phrasePosition = 0;
+
+function scheduleMusicBar() {
+  if (!musicPlaying || !musicEnabled) return;
+  try {
+    const ac = getMusicCtx();
+    const barStart = nextBarTime;
+    const phrase = PHRASES[currentPhraseIdx % PHRASES.length];
+    const noteDur = BAR_DURATION / phrase.length;
+
+    // Schedule koto melody
+    phrase.forEach((noteIdx, i) => {
+      const freq = PENTATONIC[noteIdx];
+      const noteStart = barStart + i * noteDur;
+      // Vary velocity for humanised feel
+      const vel = 0.14 + Math.random()*0.12;
+      playKotoNote(freq, noteStart, noteDur*0.85, vel);
+      // Occasionally double the note an octave down for depth
+      if (Math.random() < 0.25) {
+        playKotoNote(freq * 0.5, noteStart + 0.015, noteDur*0.7, vel*0.4);
+      }
+    });
+
+    // Flute line — plays a slower counter-melody every 2 bars
+    if (currentPhraseIdx % 2 === 0) {
+      const flutePhrase = [phrase[0], phrase[2], phrase[4]||phrase[3], phrase[6]||phrase[5]];
+      flutePhrase.forEach((noteIdx, i) => {
+        const freq = PENTATONIC[Math.min(noteIdx+2, PENTATONIC.length-1)] * 0.5; // lower octave flute
+        const noteStart = barStart + i * (BAR_DURATION/flutePhrase.length);
+        if (Math.random() < 0.7) playFluteNote(freq, noteStart, BAR_DURATION/flutePhrase.length * 0.9, 0.08);
+      });
+    }
+
+    // Sparse taiko drums — 1-2 per bar on random beats
+    const drumBeats = [0, 1, 3].filter(()=>Math.random()<0.45);
+    drumBeats.forEach(beat => {
+      playDrum(barStart + beat * (BAR_DURATION/4), 0.10+Math.random()*0.06);
+    });
+
+    // Ambient bass drone (root note) — very soft
+    playKotoNote(PENTATONIC[0] * 0.25, barStart, BAR_DURATION * 0.95, 0.06);
+
+    // Advance phrase every 2 bars
+    phrasePosition++;
+    if (phrasePosition >= 2) {
+      phrasePosition = 0;
+      currentPhraseIdx = (currentPhraseIdx + 1) % PHRASES.length;
+    }
+
+    nextBarTime += BAR_DURATION;
+
+    // Schedule next bar slightly before this one ends
+    const msUntilNext = (nextBarTime - ac.currentTime - 0.3) * 1000;
+    musicScheduleId = setTimeout(scheduleMusicBar, Math.max(0, msUntilNext));
+  } catch(e) {}
+}
+
+function startMusic() {
+  if (musicPlaying) return;
+  musicPlaying = true;
+  try {
+    const ac = getMusicCtx();
+    nextBarTime = ac.currentTime + 0.2;
+    getMasterGain().gain.cancelScheduledValues(ac.currentTime);
+    getMasterGain().gain.setValueAtTime(getMasterGain().gain.value, ac.currentTime);
+    getMasterGain().gain.linearRampToValueAtTime(0.72, ac.currentTime + 1.5);
+    // Kick off reverb (async, but music starts without it)
+    getReverb().catch(()=>{});
+    scheduleMusicBar();
+  } catch(e){}
+}
+
+function stopMusic(fade=true) {
+  musicPlaying = false;
+  if (musicScheduleId) { clearTimeout(musicScheduleId); musicScheduleId=null; }
+  try {
+    const ac = getMusicCtx();
+    const mg = getMasterGain();
+    if (fade) {
+      mg.gain.cancelScheduledValues(ac.currentTime);
+      mg.gain.setValueAtTime(mg.gain.value, ac.currentTime);
+      mg.gain.linearRampToValueAtTime(0.0, ac.currentTime + 1.2);
+    } else {
+      mg.gain.value = 0;
+    }
+  } catch(e){}
+}
+
+function toggleMusic() {
+  musicEnabled = !musicEnabled;
+  const btn = document.getElementById('music-toggle-btn');
+  if (musicEnabled) {
+    startMusic();
+    if (btn) btn.textContent = '🎵';
+    if (btn) btn.title = 'Music: On';
+  } else {
+    stopMusic(true);
+    if (btn) btn.textContent = '🔇';
+    if (btn) btn.title = 'Music: Off';
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════
@@ -661,16 +954,21 @@ const TILE = 42;
 const COLS = 10;
 const C = COLS; // global alias used throughout
 const CAT_SPEED = 2.1;
-const ENERGY_TICK = 140;
 const SCRATCH_RANGE = 92;
+const DASH_SPEED = 8.5;
+const DASH_FRAMES = 18;
+const DASH_COOLDOWN = 90;   // 1.5s at 60fps
+const HAPPY_DURATION = 480; // 8s
+const HAPPY_SPEED_MULT = 1.18;
+
 const SCRATCH_ARC = Math.PI * 1.1;
 const SCRATCH_COOLDOWN = 24;
 
 const DIFF = {
-  easy:   {energyRate:0.5,  dogSpeed:0.5,  dogDrain:10, scratchCost:1},
-  normal: {energyRate:1.0,  dogSpeed:0.8,  dogDrain:16, scratchCost:2},
-  hard:   {energyRate:1.6,  dogSpeed:1.25, dogDrain:22, scratchCost:3},
-  paws:   {energyRate:2.4,  dogSpeed:1.85, dogDrain:30, scratchCost:4},
+  easy:   {dogSpeed:0.5,  treatBonus:1},  // wrong treat still works
+  normal: {dogSpeed:0.8,  treatBonus:0},  // must use right treat
+  hard:   {dogSpeed:1.25, treatBonus:-1}, // needs +1 extra treat
+  paws:   {dogSpeed:1.85, treatBonus:-2}, // needs +2 extra treats
 };
 
 const CAT_COLORS = [
@@ -738,11 +1036,11 @@ function drawCatTopDown(ctx, x, y, cfg, t=0, facingAngle=0, moving=false, scratc
   // Ears
   ctx.fillStyle = col.body; ctx.strokeStyle = col.stroke; ctx.lineWidth = 2;
   [[-8, -22], [8, -22]].forEach(([ex, ey]) => {
-    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex - 5, ey - 9); ctx.lineTo(ex + 5, ey - 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ex - 6, ey + 2); ctx.lineTo(ex + 6, ey + 2); ctx.lineTo(ex, ey - 11); ctx.closePath(); ctx.fill(); ctx.stroke();
   });
   ctx.fillStyle = '#f8bbd0';
   [[-8, -22], [8, -22]].forEach(([ex, ey]) => {
-    ctx.beginPath(); ctx.moveTo(ex, ey - 1); ctx.lineTo(ex - 3, ey - 7); ctx.lineTo(ex + 3, ey - 7); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(ex - 3.5, ey + 1); ctx.lineTo(ex + 3.5, ey + 1); ctx.lineTo(ex, ey - 7); ctx.closePath(); ctx.fill();
   });
 
   // Eyes
@@ -894,6 +1192,7 @@ function showScreen(id) {
 
 function startPreviewAnim() {
   stopPreviewAnim();
+  if (musicEnabled && !musicPlaying) startMusic();
   function frame() {
     renderCatPreview('previewCanvas', 90, 90);
     renderCatPreview('titleCatCanvas', 130, 130);
@@ -1096,36 +1395,43 @@ function placeLeverPlatformPair(items, floors, grid, R, rng, used, idx, def) {
 // ═══════════════════════════════════════════════════════════════
 // DOG DATA
 // ═══════════════════════════════════════════════════════════════
+
+// Human definitions — 2-3 per level, slow wanderers, gift givers
+const HUMAN_OUTFITS = {
+  home:     [{top:'#ef9a9a',bottom:'#b0bec5',skin:'#ffcc80'},{top:'#80cbc4',bottom:'#ce93d8',skin:'#ffab91'},{top:'#fff9c4',bottom:'#a5d6a7',skin:'#ffe0b2'}],
+  park:     [{top:'#a5d6a7',bottom:'#ffe082',skin:'#ffcc80'},{top:'#81d4fa',bottom:'#ef9a9a',skin:'#ffab91'},{top:'#f8bbd0',bottom:'#b0bec5',skin:'#ffe0b2'}],
+  building: [{top:'#b0bec5',bottom:'#546e7a',skin:'#ffcc80'},{top:'#90a4ae',bottom:'#455a64',skin:'#ffab91'},{top:'#cfd8dc',bottom:'#607d8b',skin:'#ffe0b2'}],
+  station:  [{top:'#ce93d8',bottom:'#7e57c2',skin:'#ffcc80'},{top:'#80deea',bottom:'#00838f',skin:'#ffab91'},{top:'#ef9a9a',bottom:'#c62828',skin:'#ffe0b2'}],
+};
+const HUMAN_GIFTS = ['treat','treat','pet','pet','treat','pet']; // shuffled each level
+
+// Treat types: bone, meat, drumstick, cookie
+const TREATS = {
+  bone:     {emoji:'🦴', label:'Bone'},
+  meat:     {emoji:'🥩', label:'Meat'},
+  drumstick:{emoji:'🍖', label:'Drumstick'},
+  cookie:   {emoji:'🐾', label:'Paw Cookie'},
+};
+// Dog treat preferences and required counts
+const DOG_PREFS = {
+  mutt:     {fav:'bone',      needs:1, accepts:'any'},
+  terrier:  {fav:'bone',      needs:1, accepts:'any'},
+  dachshund:{fav:'meat',      needs:2, accepts:'bone'},
+  bulldog:  {fav:'drumstick', needs:3, accepts:'meat'},
+  greyhound:{fav:'bone',      needs:2, accepts:'cookie'},
+};
+
 const DOG_BREEDS = {
-  mutt:     {hitsNeeded:1,baseSpeed:0.62,chaseRange:110,drain:1.0,scale:1.0, bodyColor:'#d7a87a',strokeColor:'#8d6e63'},
-  terrier:  {hitsNeeded:1,baseSpeed:0.85,chaseRange:130,drain:0.9,scale:0.85,bodyColor:'#f5f0e8',strokeColor:'#9e9e9e'},
-  dachshund:{hitsNeeded:1,baseSpeed:0.68,chaseRange:100,drain:0.8,scale:0.85,bodyColor:'#bf8040',strokeColor:'#6d3a00'},
-  bulldog:  {hitsNeeded:2,baseSpeed:0.42,chaseRange:80, drain:1.4,scale:1.35,bodyColor:'#a1887f',strokeColor:'#5d4037'},
-  greyhound:{hitsNeeded:1,baseSpeed:1.05,chaseRange:150,drain:1.1,scale:0.9, bodyColor:'#b0bec5',strokeColor:'#607d8b'},
+  mutt:     {baseSpeed:0.62,chaseRange:110,scale:1.0, bodyColor:'#d7a87a',strokeColor:'#8d6e63'},
+  terrier:  {baseSpeed:0.85,chaseRange:130,scale:0.85,bodyColor:'#f5f0e8',strokeColor:'#9e9e9e'},
+  dachshund:{baseSpeed:0.68,chaseRange:100,scale:0.85,bodyColor:'#bf8040',strokeColor:'#6d3a00'},
+  bulldog:  {baseSpeed:0.42,chaseRange:80, scale:1.35,bodyColor:'#a1887f',strokeColor:'#5d4037'},
+  greyhound:{baseSpeed:1.05,chaseRange:150,scale:0.9, bodyColor:'#b0bec5',strokeColor:'#607d8b'},
 };
 
 // ═══════════════════════════════════════════════════════════════
 // BEGIN LEVEL
 // ═══════════════════════════════════════════════════════════════
-// ── Spawn capybara boss ──
-function spawnCapybara(floorCells, R, rng) {
-  // Spawn in upper half of level
-  const zone = floorCells.filter(p => p.r > 3 && p.r < Math.floor(R * 0.55));
-  const cell = zone[Math.floor(rng() * zone.length)] || {r:5, c:5};
-  return {
-    wx: cell.c*TILE + TILE/2,
-    wy: cell.r*TILE + TILE/2,
-    state: 'wander',          // wander | befriended | sitting
-    hitsLeft: 3,
-    hitCooldown: 0,
-    stunTick: 0,
-    wanderAngle: rng()*Math.PI*2,
-    wanderTimer: 100 + Math.floor(rng()*80),
-    speed: 0.35,
-    happyAnim: 0,             // plays on each hit
-    sitTick: 0,               // countdown after fully befriended
-  };
-}
 
 // ── Spawn secrets ──
 function spawnSecrets(def, floorCells, usedC, R, rng) {
@@ -1158,6 +1464,41 @@ function spawnSecrets(def, floorCells, usedC, R, rng) {
     });
   }
   return secrets;
+}
+
+function spawnHumans(def, floorCells, R, rng) {
+  const count = 2 + (R > 36 ? 1 : 0); // 2-3 depending on level size
+  const humans = [];
+  const outfits = HUMAN_OUTFITS[def.theme] || HUMAN_OUTFITS.home;
+  const usedCells = new Set();
+  // Spread across top 2/3 of level
+  const zone = floorCells.filter(p => p.r > 3 && p.r < Math.floor(R * 0.82));
+  for (let i = 0; i < count; i++) {
+    let cell;
+    for (let a = 0; a < 40; a++) {
+      cell = zone[Math.floor(rng() * zone.length)];
+      if (cell && !usedCells.has(`${cell.r},${cell.c}`)) break;
+    }
+    if (!cell) continue;
+    usedCells.add(`${cell.r},${cell.c}`);
+    const gift = rng() > 0.5 ? 'treat' : 'pet';
+    const treatTypes = ['bone','meat','drumstick','cookie'];
+    humans.push({
+      wx: cell.c*TILE + TILE/2,
+      wy: cell.r*TILE + TILE/2,
+      outfit: outfits[i % outfits.length],
+      gift,
+      treatType: treatTypes[Math.floor(rng()*treatTypes.length)],
+      state: 'wander',      // wander | offering | cooldown
+      wanderAngle: rng()*Math.PI*2,
+      wanderTimer: 80 + Math.floor(rng()*100),
+      offerCooldown: 0,
+      giftAnim: 0,
+      facingAngle: 0,
+      moving: false,
+    });
+  }
+  return humans;
 }
 
 function beginLevel(idx) {
@@ -1197,16 +1538,27 @@ function beginLevel(idx) {
     else if (roll < 0.62) { type='toy';   emoji=def.collectEmojis[2]||'🧶'; pts=12; en=0; }
     else if (roll < 0.74) { type='toy';   emoji=def.collectEmojis[3]||'🎾'; pts=15; en=0; }
     else if (roll < 0.82) { type='mouse'; emoji='🐭'; pts=50; en=10; }
-    else if (roll < 0.86) { type='goldenmouse'; emoji='🐭'; pts=200; en=30; }
-    else                  { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=3; en=5; }
+    else if (roll < 0.86) { type='goldenmouse'; emoji='🐭'; pts=200; en=0; }
+    else if (roll < 0.93) {
+      type='treat'; pts=0; en=0;
+    }
+    else                  { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=3; en=0; }
     const isMouse = type==='mouse'||type==='goldenmouse';
     const spd = isMouse ? (type==='goldenmouse' ? 1.1:0.7) : 0;
+    // Determine treat subtype before push
+    let treatType = null;
+    if (type==='treat') {
+      const tts=['bone','meat','drumstick','cookie'];
+      treatType = tts[Math.floor(rng()*tts.length)];
+      emoji = TREATS[treatType].emoji;
+    }
     collectibles.push({
-      type,emoji,pts,en,collected:false,
+      type,emoji,pts,en:0,collected:false,
       wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
       moveSpeed:spd, moveDir:rng()>0.5?1:-1,
       moveMin:(cell.c-1)*TILE+TILE/2, moveMax:(cell.c+1)*TILE+TILE/2,
       bob:rng()*Math.PI*2, golden:type==='goldenmouse',
+      treatType,
     });
   }
 
@@ -1228,7 +1580,7 @@ function beginLevel(idx) {
       breed, ...bi,
       wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
       state:'wander', wanderTimer:60+Math.floor(rng()*100), wanderAngle:rng()*Math.PI*2,
-      hitsLeft:bi.hitsNeeded, hitCooldown:0, stunTick:0, fleeTick:0,
+      treatProgress:0, treatCooldown:0, stunTick:0, fleeTick:0, happyTick:0,
       speed:bi.baseSpeed * dc.dogSpeed * (0.85+rng()*0.3),
     });
   }
@@ -1236,25 +1588,27 @@ function beginLevel(idx) {
   // Interactables
   const interactables = generateInteractables(idx, grid, R, rng);
 
-  // ── Capybara boss (one per level) ──
-  const capy = spawnCapybara(floorCells, R, rng);
+  const humans = spawnHumans(def, floorCells, R, rng);
 
   // ── Secret collectibles (3 per level, hidden) ──
   const secrets = spawnSecrets(def, floorCells, usedC, R, rng);
 
   gs = {
-    running:true, time:0, score:0, energy:100,
-    energyTick:0, hasKey:false, doorShake:0,
+    running:true, time:0, score:0,
+    hasKey:false, doorShake:0,
+    treats:{bone:0, meat:0, drumstick:0, cookie:0}, maxTreats:8,
     camY:0, grid, R, def,
     cat:{
       wx:CW/2, wy:R*TILE - TILE*1.5,
       facingAngle:Math.PI, moving:false,
       scratchCooldown:0, scratchActive:false,
       onPlatform:null,
+      dashFrames:0, dashCooldown:0, dashDx:0, dashDy:0,
+      happyFrames:0,
     },
     key:{wx:keyCell.c*TILE+TILE/2, wy:keyCell.r*TILE+TILE/2, collected:false},
     door:{wx:(4.5)*TILE + TILE/2, wy:TILE*1.4},
-    collectibles, dogs, interactables, capy, secrets,
+    collectibles, dogs, interactables, secrets, humans,
     particles:[],
     joystick:{active:false,dx:0,dy:0},
     scratchPressed:false,
@@ -1265,6 +1619,7 @@ function beginLevel(idx) {
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
   updateDiffBadge();
   if (raf) cancelAnimationFrame(raf);
+  if (musicEnabled) startMusic();
   gameLoop();
 }
 
@@ -1272,14 +1627,37 @@ function beginLevel(idx) {
 // GAME STATE & LOOP
 // ═══════════════════════════════════════════════════════════════
 let gs = null, raf = null;
+// Double-tap tracking for dash (PC)
+const lastKeyTap = {}; // code -> timestamp of last tap
+const DOUBLE_TAP_MS = 200;
+
+// Swipe tracking for dash (mobile)
+let swipeStart = null;
+const SWIPE_MIN_DIST = 40;
+const SWIPE_MAX_MS = 220;
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const keys = {};
 
 window.addEventListener('keydown', e => {
+  const wasDown = keys[e.code];
   keys[e.code] = true;
   if ((e.code==='KeyX'||e.code==='KeyZ') && gs?.running) { doScratch(); }
   if (e.code==='Space') e.preventDefault();
+  // Double-tap dash detection
+  if (!wasDown && gs?.running) {
+    const DASH_KEYS = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','KeyA','KeyD','KeyW','KeyS'];
+    if (DASH_KEYS.includes(e.code)) {
+      const now = Date.now();
+      if (lastKeyTap[e.code] && now - lastKeyTap[e.code] < DOUBLE_TAP_MS) {
+        triggerDash(e.code);
+        lastKeyTap[e.code] = 0;
+      } else {
+        lastKeyTap[e.code] = now;
+      }
+    }
+  }
 });
 window.addEventListener('keyup', e => keys[e.code] = false);
 
@@ -1292,6 +1670,7 @@ jZone.addEventListener('touchstart', e => {
   e.preventDefault(); const t = e.changedTouches[0];
   const rect = jZone.getBoundingClientRect();
   jTouch = {id:t.identifier, cx:rect.left+rect.width/2, cy:rect.top+rect.height/2};
+  swipeStart = {x:t.clientX, y:t.clientY, time:Date.now()};
   updateJoystick(t.clientX, t.clientY);
 }, {passive:false});
 jZone.addEventListener('touchmove', e => {
@@ -1302,6 +1681,16 @@ jZone.addEventListener('touchmove', e => {
   for (const t of e.changedTouches) if (jTouch && t.identifier===jTouch.id) {
     jTouch = null; if (gs) gs.joystick = {active:false,dx:0,dy:0};
     jKnob.style.transform = 'translate(-50%,-50%)';
+    // Swipe-to-dash detection
+    if (swipeStart && gs?.running) {
+      const elapsed = Date.now() - swipeStart.time;
+      const sdx = t.clientX - swipeStart.x, sdy = t.clientY - swipeStart.y;
+      const sdist = Math.hypot(sdx, sdy);
+      if (elapsed < SWIPE_MAX_MS && sdist > SWIPE_MIN_DIST) {
+        triggerDash(null, sdx/sdist, sdy/sdist);
+      }
+    }
+    swipeStart = null;
   }
 }));
 function updateJoystick(cx, cy) {
@@ -1314,6 +1703,32 @@ function updateJoystick(cx, cy) {
 function onScratchDown(e) { e.preventDefault(); if (gs?.running) doScratch(); document.getElementById('scratch-btn').classList.add('pressed'); }
 function onScratchUp(e)   { e.preventDefault(); document.getElementById('scratch-btn').classList.remove('pressed'); }
 
+function triggerDash(keyCode, nx, ny) {
+  if (!gs || gs.cat.dashFrames > 0 || gs.cat.dashCooldown > 0) return;
+  let dx = nx||0, dy = ny||0;
+  if (keyCode) {
+    if (keyCode==='ArrowLeft'||keyCode==='KeyA')  { dx=-1; dy=0; }
+    if (keyCode==='ArrowRight'||keyCode==='KeyD') { dx=1;  dy=0; }
+    if (keyCode==='ArrowUp'||keyCode==='KeyW')    { dx=0;  dy=-1; }
+    if (keyCode==='ArrowDown'||keyCode==='KeyS')  { dx=0;  dy=1; }
+  }
+  const dl = Math.hypot(dx,dy)||1; dx/=dl; dy/=dl;
+  gs.cat.dashDx = dx; gs.cat.dashDy = dy;
+  gs.cat.dashFrames = DASH_FRAMES;
+  gs.cat.dashCooldown = DASH_COOLDOWN;
+  playDash();
+  // Spawn trail ghosts
+  for (let i=0; i<5; i++) {
+    gs.particles.push({
+      wx:gs.cat.wx - dx*i*8, wy:gs.cat.wy - dy*i*8,
+      vx:0, vy:0, life:0.7-i*0.12, size:24-i*2,
+      emoji:null, isDashTrail:true,
+      col:CAT_COLORS[catCfg.colorIdx].body,
+      alpha:0.55-i*0.1,
+    });
+  }
+}
+
 function doScratch() {
   if (!gs || gs.cat.scratchCooldown > 0) return;
   gs.cat.scratchCooldown = SCRATCH_COOLDOWN;
@@ -1323,64 +1738,85 @@ function doScratch() {
   checkScratchHits();
 }
 
+function offerTreat(dog) {
+  const pref = DOG_PREFS[dog.breed] || DOG_PREFS.mutt;
+  const dc = DIFF[difficulty];
+
+  // Find best available treat for this dog
+  let treatToUse = null;
+  const totalTreats = Object.values(gs.treats).reduce((a,b)=>a+b,0);
+  if (totalTreats === 0) {
+    spawnPop(dog.wx, dog.wy, 'No treats! 😿', '#ef9a9a');
+    return;
+  }
+  // Prefer favourite, then accepted, then any (on easy)
+  if (gs.treats[pref.fav] > 0) {
+    treatToUse = pref.fav;
+  } else if (pref.accepts !== 'any' && gs.treats[pref.accepts] > 0) {
+    treatToUse = pref.accepts;
+  } else if (dc.treatBonus >= 1) {
+    // Easy mode: any treat works
+    treatToUse = Object.keys(gs.treats).find(t => gs.treats[t] > 0);
+  }
+
+  if (!treatToUse) {
+    const wantEmoji = TREATS[pref.fav].emoji;
+    spawnPop(dog.wx, dog.wy, `Wants ${wantEmoji}!`, '#ffb74d');
+    playWoof();
+    return;
+  }
+
+  // Consume treat
+  gs.treats[treatToUse]--;
+
+  // Is this the preferred treat?
+  const isPreferred = treatToUse === pref.fav;
+  // How many treats needed (difficulty affects this)
+  const baseNeeds = pref.needs + (isPreferred ? 0 : 1) - dc.treatBonus;
+  const needed = Math.max(1, baseNeeds);
+
+  dog.treatProgress = (dog.treatProgress || 0) + 1;
+  dog.treatCooldown = 60;
+
+  const treatEmoji = TREATS[treatToUse].emoji;
+  const remaining = needed - dog.treatProgress;
+
+  playCollect();
+  if (dog.treatProgress >= needed) {
+    // Dog is befriended!
+    dog.state = 'happy';
+    dog.happyTick = 0;
+    const pts = dog.breed==='bulldog'?80: dog.breed==='greyhound'||dog.breed==='dachshund'?50:30;
+    gs.score += pts;
+    spawnPop(dog.wx, dog.wy, `🐾 Friends! +${pts}`, '#f48fb1');
+    spawnParticles(dog.wx, dog.wy, '💕');
+    spawnParticles(dog.wx, dog.wy, treatEmoji);
+    playDoorOpen(); // happy jingle
+  } else {
+    const hearts = ['','❤️','❤️❤️','❤️❤️❤️'][Math.min(dog.treatProgress,3)];
+    spawnPop(dog.wx, dog.wy, `${treatEmoji}${hearts} ${remaining} more!`, '#ce93d8');
+    playHit();
+  }
+}
+
 function checkScratchHits() {
   const cat = gs.cat;
   const fa = cat.facingAngle - Math.PI/2; // actual world direction
 
-  // Check dogs
+  // Offer treat to nearby dog
   for (const dog of gs.dogs) {
-    if (dog.state==='gone') continue;
+    if (dog.state==='gone'||dog.state==='happy') continue;
     const dx=dog.wx-cat.wx, dy=dog.wy-cat.wy;
     const dist = Math.hypot(dx,dy);
     if (dist > SCRATCH_RANGE) continue;
     const angle = Math.atan2(dy,dx);
     const diff = Math.abs(normaliseAngle(angle - fa));
     if (diff > SCRATCH_ARC/2) continue;
-    // Hit!
-    if (dog.hitCooldown > 0) continue;
-    dog.hitsLeft--;
-    playHit();
-    playWoof();
-    if (dog.hitsLeft <= 0) {
-      dog.state = 'fleeing'; dog.fleeTick = 0;
-      gs.score += dog.breed==='bulldog'?60:30;
-      spawnPop(dog.wx, dog.wy, dog.breed==='bulldog'?'💪+60!':'🐾+30!','#ce93d8');
-      spawnParticles(dog.wx, dog.wy, '⭐');
-    } else {
-      dog.stunTick = 50; dog.hitCooldown = 80;
-      spawnPop(dog.wx, dog.wy, '⚡ One more!', '#ffd700');
-    }
+    if (dog.treatCooldown > 0) continue;
+    offerTreat(dog);
+    break; // one dog per scratch
   }
 
-  // Check capybara
-  if (gs.capy && gs.capy.state !== 'sitting') {
-    const dx=gs.capy.wx-cat.wx, dy=gs.capy.wy-cat.wy;
-    const dist=Math.hypot(dx,dy);
-    if (dist <= SCRATCH_RANGE && gs.capy.hitCooldown===0) {
-      const angle=Math.atan2(dy,dx);
-      const fa2 = cat.facingAngle - Math.PI/2;
-      const diff=Math.abs(normaliseAngle(angle-fa2));
-      if (diff <= SCRATCH_ARC/2) {
-        gs.capy.hitsLeft--;
-        gs.capy.hitCooldown = 90;
-        gs.capy.happyAnim = 40;
-        playWoof(); playHit();
-        const faces = ['😐','🙂','😊','🥰'];
-        const faceIdx = 3 - gs.capy.hitsLeft;
-        spawnPop(gs.capy.wx, gs.capy.wy, faces[Math.min(faceIdx,3)], '#f8bbd0');
-        if (gs.capy.hitsLeft <= 0) {
-          gs.capy.state = 'sitting';
-          gs.capy.sitTick = 0;
-          gs.score += 150;
-          gs.energy = Math.min(100, gs.energy + 40);
-          spawnPop(gs.capy.wx, gs.capy.wy, '🥰 +150! Friend!', '#f48fb1');
-          spawnParticles(gs.capy.wx, gs.capy.wy, '🌸');
-          spawnParticles(gs.capy.wx+20, gs.capy.wy-10, '✨');
-          spawnParticles(gs.capy.wx-20, gs.capy.wy+10, '💖');
-        }
-      }
-    }
-  }
 
   // Check interactables
   for (const obj of gs.interactables) {
@@ -1490,16 +1926,38 @@ function update() {
     }
   }
 
-  // Apply movement one axis at a time — stops cleanly, no bounce
-  cat.wx += ix * CAT_SPEED;
-  cat.wx = Math.max(TILE*1.1, Math.min(COLS*TILE - TILE*1.1, cat.wx));
-  if (catHitsWall(cat.wx, cat.wy)) cat.wx -= ix * CAT_SPEED;
+  // Dash movement
+  if (cat.dashCooldown > 0) cat.dashCooldown--;
+  if (cat.dashFrames > 0) {
+    cat.dashFrames--;
+    const dashSpd = DASH_SPEED * (cat.happyFrames>0?HAPPY_SPEED_MULT:1);
+    cat.wx += cat.dashDx * dashSpd;
+    cat.wy += cat.dashDy * dashSpd;
+    cat.wx = Math.max(TILE*1.1, Math.min(COLS*TILE-TILE*1.1, cat.wx));
+    cat.wy = Math.max(TILE*1.1, Math.min(gs.R*TILE-TILE*1.1, cat.wy));
+    if (catHitsWall(cat.wx, cat.wy)) { cat.wx -= cat.dashDx*dashSpd; cat.wy -= cat.dashDy*dashSpd; cat.dashFrames=0; }
+    // Spawn trail particle each dash frame
+    if (cat.dashFrames % 3 === 0) {
+      gs.particles.push({wx:cat.wx, wy:cat.wy, vx:0, vy:0, life:0.5, size:20, emoji:null,
+        isDashTrail:true, col:CAT_COLORS[catCfg.colorIdx].body, alpha:0.4});
+    }
+    resolveCollisions(cat);
+  } else {
+    // Happy speed boost
+    const spd = CAT_SPEED * (cat.happyFrames>0?HAPPY_SPEED_MULT:1);
+    // Apply movement one axis at a time — stops cleanly, no bounce
+    cat.wx += ix * spd;
+    cat.wx = Math.max(TILE*1.1, Math.min(COLS*TILE - TILE*1.1, cat.wx));
+    if (catHitsWall(cat.wx, cat.wy)) cat.wx -= ix * spd;
 
-  cat.wy += iy * CAT_SPEED;
-  cat.wy = Math.max(TILE*1.1, Math.min(gs.R*TILE - TILE*1.1, cat.wy));
-  if (catHitsWall(cat.wx, cat.wy)) cat.wy -= iy * CAT_SPEED;
+    cat.wy += iy * spd;
+    cat.wy = Math.max(TILE*1.1, Math.min(gs.R*TILE - TILE*1.1, cat.wy));
+    if (catHitsWall(cat.wx, cat.wy)) cat.wy -= iy * spd;
 
-  resolveCollisions(cat);
+    resolveCollisions(cat);
+  }
+  // Tick happy
+  if (cat.happyFrames > 0) cat.happyFrames--;
 
   // Scratch cooldown
   if (cat.scratchCooldown > 0) cat.scratchCooldown--;
@@ -1508,11 +1966,6 @@ function update() {
   const targetCamY = cat.wy - CH * 0.62;
   gs.camY += (targetCamY - gs.camY) * 0.09;
   gs.camY = Math.max(0, Math.min(gs.R * TILE - CH, gs.camY));
-
-  // Energy drain
-  gs.energyTick++;
-  if (gs.energyTick >= ENERGY_TICK) { gs.energy -= 1.2 * d.energyRate; gs.energyTick = 0; }
-  if (gs.energy <= 0) { gs.running=false; showGameOver(); return; }
 
   // Key pickup
   if (!gs.key.collected) {
@@ -1579,49 +2032,96 @@ function update() {
       }
     }
     if (Math.hypot(cat.wx-c.wx, cat.wy-c.wy)<20) {
-      c.collected=true; gs.score+=c.pts; gs.energy=Math.min(100,gs.energy+c.en);
-      playCollect();
-      spawnPop(c.wx, c.wy, c.en>0?`+${c.pts}🍣`:`+${c.pts}⭐`, c.golden?'#ffd700':c.en>0?'#f48fb1':'#ce93d8');
-      spawnParticles(c.wx, c.wy, c.golden?'✨':'🌸');
+      c.collected=true;
+      if (c.type==='treat' && c.treatType) {
+        const total = Object.values(gs.treats).reduce((a,b)=>a+b,0);
+        if (total < gs.maxTreats) {
+          gs.treats[c.treatType] = (gs.treats[c.treatType]||0)+1;
+          playCollect();
+          spawnPop(c.wx, c.wy, `${TREATS[c.treatType].emoji} Got treat!`, '#f48fb1');
+          spawnParticles(c.wx, c.wy, TREATS[c.treatType].emoji);
+        } else {
+          spawnPop(c.wx, c.wy, 'Bag full! 🎒', '#bdbdbd');
+        }
+      } else {
+        gs.score+=c.pts;
+        playCollect();
+        spawnPop(c.wx, c.wy, c.golden?`✨+${c.pts}!`:`+${c.pts}⭐`, c.golden?'#ffd700':'#ce93d8');
+        spawnParticles(c.wx, c.wy, c.golden?'✨':'🌸');
+      }
     }
   }
 
   updateDogs();
-  updateCapybara();
   updateSecrets();
+  updateHumans();
   updateHUD();
 }
 
-function updateCapybara() {
-  const capy = gs.capy; if (!capy) return;
+function updateHumans() {
+  if (!gs.humans) return;
   const cat = gs.cat;
-  if (capy.hitCooldown > 0) capy.hitCooldown--;
-  if (capy.stunTick > 0) { capy.stunTick--; return; }
-  if (capy.happyAnim > 0) capy.happyAnim--;
+  for (const h of gs.humans) {
+    if (h.offerCooldown > 0) h.offerCooldown--;
+    if (h.giftAnim > 0) h.giftAnim--;
 
-  if (capy.state === 'sitting') {
-    capy.sitTick++;
-    return; // just sits there looking happy
-  }
+    const dist = Math.hypot(cat.wx - h.wx, cat.wy - h.wy);
 
-  // Very slow gentle wander — never chases
-  capy.wanderTimer--;
-  if (capy.wanderTimer <= 0) {
-    capy.wanderAngle += (Math.random()-0.5)*0.8;
-    capy.wanderTimer = 120 + Math.floor(Math.random()*160);
-  }
-  capy.wx += Math.cos(capy.wanderAngle) * capy.speed * 0.3;
-  capy.wy += Math.sin(capy.wanderAngle) * capy.speed * 0.3;
-  capy.wx = Math.max(TILE*1.5, Math.min((COLS-1)*TILE-TILE*1.5, capy.wx));
-  capy.wy = Math.max(TILE*1.5, Math.min((gs.R-1)*TILE-TILE*1.5, capy.wy));
+    if (dist < 48 && h.offerCooldown === 0) {
+      // Give gift to cat
+      h.state = 'offering';
+      h.giftAnim = 40;
+      h.offerCooldown = 300; // 5s cooldown before offering again
+      h.facingAngle = Math.atan2(cat.wy - h.wy, cat.wx - h.wx) + Math.PI/2;
+      h.moving = false;
 
-  // Gentle nudge on contact (no drain)
-  const dist = Math.hypot(cat.wx-capy.wx, cat.wy-capy.wy);
-  if (dist < 32) {
-    const nx=(cat.wx-capy.wx)/(dist||1), ny=(cat.wy-capy.wy)/(dist||1);
-    cat.wx += nx*1.5; cat.wy += ny*1.5;
+      if (h.gift === 'treat') {
+        const total = Object.values(gs.treats).reduce((a,b)=>a+b,0);
+        if (total < gs.maxTreats) {
+          gs.treats[h.treatType] = (gs.treats[h.treatType]||0) + 1;
+          playCollect();
+          spawnPop(h.wx, h.wy, `${TREATS[h.treatType].emoji} Here you go!`, '#f48fb1');
+          spawnParticles(h.wx, h.wy, TREATS[h.treatType].emoji);
+          spawnParticles(h.wx, h.wy, '💕');
+        } else {
+          spawnPop(h.wx, h.wy, 'Bag full! 😅', '#bdbdbd');
+        }
+      } else {
+        // Pet — give happiness boost
+        cat.happyFrames = HAPPY_DURATION;
+        playPurr();
+        spawnPop(h.wx, h.wy, '🌈 Good kitty!', '#ce93d8');
+        spawnParticles(h.wx, h.wy, '🌈');
+        spawnParticles(cat.wx, cat.wy, '✨');
+      }
+    } else if (dist >= 48) {
+      h.state = 'wander';
+    }
+
+    if (h.state === 'wander') {
+      h.wanderTimer--;
+      if (h.wanderTimer <= 0) {
+        h.wanderAngle += (Math.random()-0.5)*1.1;
+        h.wanderTimer = 80 + Math.floor(Math.random()*120);
+      }
+      const spd = 0.4;
+      const nx = Math.cos(h.wanderAngle)*spd, ny = Math.sin(h.wanderAngle)*spd;
+      h.wx += nx; h.wy += ny;
+      h.moving = Math.abs(nx)+Math.abs(ny) > 0.05;
+      if (h.moving) h.facingAngle = Math.atan2(ny, nx) + Math.PI/2;
+      // Clamp to world
+      h.wx = Math.max(TILE*1.5, Math.min((COLS-1)*TILE-TILE*1.5, h.wx));
+      h.wy = Math.max(TILE*1.5, Math.min((gs.R-1)*TILE-TILE*1.5, h.wy));
+      // Bounce off walls
+      const hgr = Math.floor(h.wy/TILE), hgc = Math.floor(h.wx/TILE);
+      if (hgr>=0&&hgr<gs.R&&hgc>=0&&hgc<COLS && (gs.grid[hgr][hgc]===1||gs.grid[hgr][hgc]===2||gs.grid[hgr][hgc]===3)) {
+        h.wx -= nx; h.wy -= ny;
+        h.wanderAngle += Math.PI * (0.5 + Math.random()*0.5);
+      }
+    }
   }
 }
+
 
 function updateSecrets() {
   if (!gs.secrets) return;
@@ -1699,7 +2199,7 @@ function updateDogs() {
   for (const dog of gs.dogs) {
     if (dog.state==='gone') continue;
     if (dog.stunTick>0) { dog.stunTick--; continue; }
-    if (dog.hitCooldown>0) dog.hitCooldown--;
+    if (dog.treatCooldown>0) dog.treatCooldown--;
     if (dog.state==='fleeing') {
       const fx=dog.wx-cat.wx, fy=dog.wy-cat.wy, fl=Math.hypot(fx,fy)||1;
       dog.wx+=fx/fl*dog.speed*2.0; dog.wy+=fy/fl*dog.speed*2.0;
@@ -1707,6 +2207,7 @@ function updateDogs() {
       if (dog.fleeTick>140||dog.wx<TILE||dog.wx>(COLS-1)*TILE||dog.wy<TILE||dog.wy>(gs.R-1)*TILE) dog.state='gone';
       continue;
     }
+    if (dog.state==='happy') continue; // sits still once befriended
     const dist = Math.hypot(cat.wx-dog.wx, cat.wy-dog.wy);
     if (dist < dog.chaseRange*(dc.dogSpeed>1?1.2:1)) {
       const dx=cat.wx-dog.wx, dy=cat.wy-dog.wy, dl=Math.hypot(dx,dy)||1;
@@ -1719,10 +2220,17 @@ function updateDogs() {
     }
     dog.wx=Math.max(TILE+10,Math.min((COLS-1)*TILE-10,dog.wx));
     dog.wy=Math.max(TILE+10,Math.min((gs.R-1)*TILE-10,dog.wy));
-    // Contact damage
-    if (dist<26&&dog.hitCooldown===0) {
-      gs.energy-=dc.dogDrain*dog.drain; dog.hitCooldown=80;
-      spawnPop(dog.wx, dog.wy, `🐶-${Math.round(dc.dogDrain*dog.drain)}!`,'#ef9a9a');
+    // Gentle nudge on contact (no damage)
+    if (dist < 28) {
+      const nx=(cat.wx-dog.wx)/(dist||1), ny=(cat.wy-dog.wy)/(dist||1);
+      cat.wx += nx*1.2; cat.wy += ny*1.2;
+    }
+  }
+  // Tick happy dogs away after celebration
+  for (const dog of gs.dogs) {
+    if (dog.state==='happy') {
+      dog.happyTick = (dog.happyTick||0)+1;
+      if (dog.happyTick>180) dog.state='gone';
     }
   }
   gs.dogs = gs.dogs.filter(d=>d.state!=='gone');
@@ -1766,11 +2274,17 @@ function render() {
   // Dogs
   for (const dog of gs.dogs) if (dog.state!=='gone') drawDogTopDown(dog, gs.time, gs.cat);
 
-  // Capybara
-  if (gs.capy) drawCapybara(gs.capy, gs.time);
+  // Humans
+  if (gs.humans) for (const h of gs.humans) drawHuman(h, gs.time);
 
   // Secrets (hidden until near)
   if (gs.secrets) for (const s of gs.secrets) if (!s.collected) drawSecret(s, gs.time, gs.cat);
+
+  // Dash trail (behind cat)
+  drawDashTrail();
+
+  // Rainbow glow (under cat, above trail)
+  if (gs.cat.happyFrames > 0) drawRainbowGlow(gs.cat.wx, gs.cat.wy, gs.time, gs.cat.happyFrames);
 
   // Cat
   drawCatTopDown(ctx, gs.cat.wx, gs.cat.wy, catCfg, gs.time, gs.cat.facingAngle, gs.cat.moving, gs.cat.scratchCooldown);
@@ -1908,11 +2422,41 @@ function drawDoor(wx,wy,def,hasKey,shake,t) {
 
 function drawKey(wx,wy,t) {
   ctx.save(); ctx.translate(wx,wy);
-  ctx.shadowColor='#ffd700'; ctx.shadowBlur=8+Math.sin(t*0.1)*6;
-  const s=0.9+Math.sin(t*0.08)*0.1; ctx.scale(s,s);
-  ctx.font='22px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('🗝️',0,0);
-  ctx.shadowBlur=0; ctx.globalAlpha=0.7+Math.sin(t*0.15)*0.3;
-  ctx.font='10px serif'; ctx.fillText('✨',14*Math.sin(t*0.05),-14*Math.cos(t*0.05));
+
+  // Large outer beacon glow — visible from far away
+  const outerR = 34 + Math.sin(t*0.07)*6;
+  const grd = ctx.createRadialGradient(0,0,4,0,0,outerR);
+  grd.addColorStop(0,'rgba(255,220,0,0.45)');
+  grd.addColorStop(0.5,'rgba(255,180,0,0.22)');
+  grd.addColorStop(1,'rgba(255,160,0,0)');
+  ctx.fillStyle=grd;
+  ctx.beginPath(); ctx.arc(0,0,outerR,0,Math.PI*2); ctx.fill();
+
+  // Pulsing solid ring
+  ctx.strokeStyle=`rgba(255,215,0,${0.55+Math.sin(t*0.12)*0.35})`;
+  ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.arc(0,0,22+Math.sin(t*0.09)*4,0,Math.PI*2); ctx.stroke();
+
+  // Second smaller ring, offset phase
+  ctx.strokeStyle=`rgba(255,255,150,${0.4+Math.sin(t*0.12+2)*0.3})`;
+  ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(0,0,15+Math.sin(t*0.11+1)*3,0,Math.PI*2); ctx.stroke();
+
+  // Key emoji — larger, strong shadow
+  ctx.shadowColor='#ffd700'; ctx.shadowBlur=18+Math.sin(t*0.1)*8;
+  const s = 1.0+Math.sin(t*0.08)*0.1; ctx.scale(s,s);
+  ctx.font='28px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('🗝️',0,1);
+  ctx.shadowBlur=0;
+
+  // 4 orbiting sparkles
+  ctx.globalAlpha=0.85;
+  ctx.font='11px serif';
+  for(let i=0;i<4;i++){
+    const a = t*0.06 + i*Math.PI/2;
+    const r = 28+Math.sin(t*0.1+i)*4;
+    ctx.fillText(['✨','⭐','✨','💛'][i], Math.cos(a)*r, Math.sin(a)*r);
+  }
   ctx.restore();
 }
 
@@ -1989,120 +2533,6 @@ function drawDogTopDown(dog,t,cat) {
 }
 
 
-function drawCapybara(capy, t) {
-  const sitting = capy.state === 'sitting';
-  const happy = capy.happyAnim > 0;
-  const faces = ['😐','🙂','😊','🥰'];
-  const faceIdx = Math.min(3 - capy.hitsLeft, 3);
-  const wobble = sitting ? 0 : Math.sin(t*0.08)*1.5;
-
-  ctx.save();
-  ctx.translate(capy.wx, capy.wy + wobble);
-
-  // Glow aura when befriended
-  if (sitting) {
-    ctx.save();
-    ctx.globalAlpha = 0.18 + Math.sin(t*0.07)*0.08;
-    ctx.fillStyle = '#f48fb1';
-    ctx.beginPath(); ctx.arc(0, 0, 38, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
-  }
-
-  // Shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.beginPath(); ctx.ellipse(0, 4, sitting?22:18, sitting?10:8, 0, 0, Math.PI*2); ctx.fill();
-
-  // Body — big rounded rectangle, capybaras are chonky
-  const bw = sitting ? 28 : 24, bh = sitting ? 16 : 20;
-  ctx.fillStyle = '#8d6e3a'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.ellipse(0, sitting?2:0, bw, bh, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-
-  // Fur highlight
-  ctx.fillStyle = 'rgba(255,220,150,0.2)';
-  ctx.beginPath(); ctx.ellipse(-4, sitting?-2:-4, bw*0.6, bh*0.5, -0.3, 0, Math.PI*2); ctx.fill();
-
-  // Legs (four stubby ones)
-  ctx.fillStyle = '#7a5c28'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=1.5;
-  if (!sitting) {
-    const legBob = Math.sin(t*0.18)*4;
-    [[-16,12],[16,12],[-16,-4],[16,-4]].forEach(([lx,ly],i)=>{
-      ctx.beginPath(); ctx.ellipse(lx, ly+(i%2===0?legBob:-legBob), 6, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-    });
-  } else {
-    // Sitting — legs tucked
-    [[-18,10],[18,10],[-14,14],[14,14]].forEach(([lx,ly])=>{
-      ctx.beginPath(); ctx.ellipse(lx,ly,7,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    });
-  }
-
-  // Head
-  ctx.fillStyle = '#8d6e3a'; ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=2.5;
-  ctx.beginPath(); ctx.ellipse(0, -20, 15, 12, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-
-  // Nose/snout (capybaras have a distinctive wide snout)
-  ctx.fillStyle = '#a0784a';
-  ctx.beginPath(); ctx.ellipse(0, -17, 10, 7, 0, 0, Math.PI*2); ctx.fill();
-  ctx.strokeStyle = '#6d4c18'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.ellipse(0, -17, 10, 7, 0, 0, Math.PI*2); ctx.stroke();
-
-  // Nostrils
-  ctx.fillStyle = '#5a3810';
-  ctx.beginPath(); ctx.arc(-3, -16, 2, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(3, -16, 2, 0, Math.PI*2); ctx.fill();
-
-  // Eyes
-  ctx.fillStyle = '#3e2206';
-  ctx.beginPath(); ctx.arc(-6, -23, 3.5, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(6, -23, 3.5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle='white';
-  ctx.beginPath(); ctx.arc(-5,-24,1.3,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(7,-24,1.3,0,Math.PI*2); ctx.fill();
-
-  // Ears (small rounded)
-  ctx.fillStyle='#8d6e3a'; ctx.strokeStyle='#6d4c18'; ctx.lineWidth=2;
-  [[-10,-30],[10,-30]].forEach(([ex,ey])=>{
-    ctx.beginPath(); ctx.ellipse(ex,ey,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
-  });
-
-  // Blush when happy / hit
-  if (faceIdx > 0 || sitting) {
-    ctx.globalAlpha = 0.35 + (sitting?Math.sin(t*0.08)*0.1:0);
-    ctx.fillStyle = '#f48fb1';
-    ctx.beginPath(); ctx.ellipse(-8,-21,5,3,0,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(8,-21,5,3,0,0,Math.PI*2); ctx.fill();
-    ctx.globalAlpha=1;
-  }
-
-  // Face emoji above head
-  const faceEmoji = sitting ? '🥰' : faces[faceIdx];
-  const faceScale = happy ? 1.1+Math.sin(capy.happyAnim*0.3)*0.15 : 1;
-  ctx.save(); ctx.scale(faceScale, faceScale);
-  ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(faceEmoji, 0, -38/faceScale);
-  ctx.restore();
-
-  // Hit count pips
-  if (!sitting && capy.hitsLeft > 0) {
-    ctx.font='9px serif'; ctx.textAlign='center';
-    for (let h=0; h<capy.hitsLeft; h++) ctx.fillText('❤️', -8+h*10, -48);
-  }
-
-  // Stunned stars
-  if (capy.stunTick>0) {
-    ctx.font='12px serif'; ctx.textAlign='center';
-    ctx.fillText('💫', Math.sin(t*0.3)*6, -52);
-  }
-
-  // Floating hearts when sitting
-  if (sitting && capy.sitTick < 200) {
-    ctx.globalAlpha = Math.max(0, 1-(capy.sitTick/200));
-    ctx.font='14px serif';
-    ctx.fillText('💖', Math.sin(capy.sitTick*0.05)*12, -50 - capy.sitTick*0.15);
-    ctx.globalAlpha=1;
-  }
-
-  ctx.restore();
-}
 
 function drawSecret(s, t, cat) {
   const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
@@ -2142,13 +2572,151 @@ function drawSecret(s, t, cat) {
   }
   ctx.restore();
 }
+
+function drawHuman(h, t) {
+  const o = h.outfit;
+  const bob = h.moving ? Math.sin(t*0.22)*1.5 : 0;
+  const isOffering = h.state==='offering';
+  const armWave = isOffering ? Math.sin(t*0.25)*0.4 : Math.sin(t*0.1)*0.15;
+
+  ctx.save();
+  ctx.translate(h.wx, h.wy + bob);
+  ctx.rotate(h.facingAngle);
+
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.08)';
+  ctx.beginPath(); ctx.ellipse(0,6,14,5,0,0,Math.PI*2); ctx.fill();
+
+  // Legs
+  const legSwing = h.moving ? Math.sin(t*0.2)*8 : 0;
+  ctx.fillStyle=o.bottom; ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1;
+  [[-5,14+legSwing],[5,14-legSwing]].forEach(([lx,ly])=>{
+    ctx.beginPath(); ctx.roundRect(lx-4,8,8,ly-8,3); ctx.fill(); ctx.stroke();
+  });
+  // Feet
+  ctx.fillStyle='#5d4037';
+  [[-5,14+legSwing],[5,14-legSwing]].forEach(([lx,ly])=>{
+    ctx.beginPath(); ctx.ellipse(lx,ly+2,5,3,0,0,Math.PI*2); ctx.fill();
+  });
+
+  // Body
+  ctx.fillStyle=o.top; ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.roundRect(-9,-4,18,13,4); ctx.fill(); ctx.stroke();
+
+  // Arms
+  ctx.fillStyle=o.top; ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1;
+  const leftArm = h.moving ? armWave : armWave;
+  const rightArm = -leftArm;
+  // Left arm
+  ctx.save(); ctx.translate(-9,0); ctx.rotate(leftArm);
+  ctx.beginPath(); ctx.roundRect(-4,0,8,10,3); ctx.fill(); ctx.stroke(); ctx.restore();
+  // Right arm — if offering, extends forward holding gift
+  ctx.save(); ctx.translate(9,0); ctx.rotate(isOffering ? -0.6 : rightArm);
+  ctx.beginPath(); ctx.roundRect(-4,0,8,10,3); ctx.fill(); ctx.stroke();
+  if (isOffering) {
+    // Hand holding gift
+    ctx.fillStyle=o.skin; ctx.beginPath(); ctx.arc(0,12,4,0,Math.PI*2); ctx.fill();
+    ctx.font='11px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(h.gift==='treat'?TREATS[h.treatType].emoji:'🤚',0,12);
+  }
+  ctx.restore();
+
+  // Head
+  ctx.fillStyle=o.skin; ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(0,-12,10,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Hair — simple arc
+  const hairColors=['#5d4037','#212121','#ffd54f','#ef9a9a','#b0bec5'];
+  ctx.fillStyle=hairColors[Math.abs(h.wx*3|0)%hairColors.length];
+  ctx.beginPath(); ctx.arc(0,-14,10,Math.PI,2*Math.PI); ctx.fill();
+
+  // Face
+  ctx.fillStyle='#3e2723';
+  ctx.beginPath(); ctx.arc(-3,-12,1.8,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3,-12,1.8,0,Math.PI*2); ctx.fill();
+  // Smile when offering
+  ctx.strokeStyle='#3e2723'; ctx.lineWidth=1.5; ctx.lineCap='round';
+  ctx.beginPath();
+  if (isOffering) {
+    ctx.arc(0,-10,4,0.2,Math.PI-0.2); // big smile
+  } else {
+    ctx.arc(0,-10,3,0.3,Math.PI-0.3); // small smile
+  }
+  ctx.stroke();
+
+  // Gift bubble when nearby but not yet offering
+  if (h.offerCooldown === 0 && h.state!=='offering') {
+    const giftEmoji = h.gift==='treat'?TREATS[h.treatType].emoji:'🤗';
+    ctx.save();
+    ctx.globalAlpha=0.7+Math.sin(t*0.12)*0.3;
+    ctx.font='14px serif'; ctx.textAlign='center';
+    // Small floating icon hint
+    ctx.fillText(giftEmoji, 2, -26-Math.sin(t*0.08)*3);
+    ctx.restore();
+  }
+
+  // Offering animation — sparkle burst
+  if (h.giftAnim > 0) {
+    const prog = h.giftAnim/40;
+    ctx.save(); ctx.globalAlpha=prog;
+    ctx.font='14px serif'; ctx.textAlign='center';
+    ctx.fillText('✨', -15*prog, -20-10*prog);
+    ctx.fillText('✨',  15*prog, -20-8*prog);
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
 function drawParticles() {
   gs.particles=gs.particles.filter(p=>p.life>0);
   for (const p of gs.particles) {
+    if (p.isDashTrail) { p.life-=0.07; continue; } // drawn by drawDashTrail
     ctx.save(); ctx.globalAlpha=p.life;
     ctx.font=p.size+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(p.emoji,p.wx,p.wy); ctx.restore();
     p.wx+=p.vx; p.wy+=p.vy; p.vy-=0.08; p.life-=0.022;
+  }
+}
+
+function drawDashTrail() {
+  for (const p of gs.particles) {
+    if (!p.isDashTrail) continue;
+    ctx.save();
+    ctx.globalAlpha = p.life * 0.7;
+    ctx.fillStyle = p.col || '#f8bbd0';
+    ctx.beginPath(); ctx.arc(p.wx, p.wy, p.size/2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    p.life -= 0.07;
+  }
+}
+
+function drawRainbowGlow(wx, wy, t, frames) {
+  const intensity = Math.min(1, frames / 60); // fade in/out
+  const ringCount = 3;
+  for (let i = 0; i < ringCount; i++) {
+    const hue = ((t * 3 + i * (360/ringCount)) % 360);
+    const r = 22 + i*5 + Math.sin(t*0.15+i)*3;
+    ctx.save();
+    ctx.globalAlpha = intensity * (0.35 - i*0.08) * (0.7 + Math.sin(t*0.1+i)*0.3);
+    ctx.strokeStyle = `hsl(${hue},100%,65%)`;
+    ctx.lineWidth = 4 - i;
+    ctx.beginPath(); ctx.arc(wx, wy, r, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+  // Sparkles orbiting
+  if (frames > 30) {
+    for (let i = 0; i < 4; i++) {
+      const a = t*0.08 + i*Math.PI/2;
+      const hue = ((t*4 + i*90) % 360);
+      ctx.save();
+      ctx.globalAlpha = intensity * 0.8;
+      ctx.fillStyle = `hsl(${hue},100%,70%)`;
+      ctx.beginPath();
+      ctx.arc(wx + Math.cos(a)*28, wy + Math.sin(a)*28, 3, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 }
 
@@ -2185,12 +2753,23 @@ function spawnPop(wx,wy,text,color) {
 }
 
 function updateHUD() {
-  const pct=Math.max(0,gs.energy)/100;
-  const bar=document.getElementById('energy-bar');
-  bar.style.width=(pct*100)+'%';
-  bar.style.background=pct>.5?'linear-gradient(90deg,#f48fb1,#f06292)':pct>.25?'linear-gradient(90deg,#ffb74d,#ff9800)':'linear-gradient(90deg,#ef9a9a,#e53935)';
   document.getElementById('score-val').textContent=gs.score;
   document.getElementById('key-indicator').textContent=gs.hasKey?'🗝️ ✓':'🗝️ ✗';
+  // Treat inventory
+  const parts = Object.entries(gs.treats)
+    .filter(([,v])=>v>0)
+    .map(([k,v])=>`${TREATS[k].emoji}×${v}`)
+    .join(' ');
+  document.getElementById('treat-display').textContent = parts || '🎒 Empty';
+  // Happy indicator
+  const happyEl = document.getElementById('happy-hud');
+  if (gs.cat.happyFrames > 0) {
+    happyEl.style.display='';
+    const secs = Math.ceil(gs.cat.happyFrames/60);
+    document.getElementById('happy-display').textContent=`🌈 ${secs}s`;
+  } else {
+    happyEl.style.display='none';
+  }
 }
 
 function updateDiffBadge() {
@@ -2199,7 +2778,8 @@ function updateDiffBadge() {
 }
 
 function showGameOver() {
-  document.getElementById('go-name').textContent=`${catName} ran out of energy… 😿`;
+  stopMusic();
+  document.getElementById('go-name').textContent=`${catName} got lost… 😿`;
   document.getElementById('go-score').textContent=`⭐ Score: ${gs.score}`;
   document.getElementById('hud').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='none';
@@ -2207,6 +2787,7 @@ function showGameOver() {
 }
 
 function showLevelComplete() {
+  stopMusic();
   if (currentLevel+1>unlockedLevels) unlockedLevels=currentLevel+1;
   const def=LEVEL_DEFS[currentLevel];
   document.getElementById('lc-emoji').textContent=def.icon;
