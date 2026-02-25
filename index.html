@@ -119,31 +119,6 @@ html,body{
 }
 #cat-name-input:focus{border-color:var(--pink);}
 
-/* ── DIFF SELECT ── */
-#diff-screen{
-  background:linear-gradient(170deg,#fff9f0 0%,#fce4ec 100%);
-}
-#diff-screen h2{
-  font-family:'Fredoka One',cursive;font-size:28px;
-  color:var(--text);text-shadow:2px 2px 0 var(--peach);
-}
-.diff-cards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;}
-.diff-card{
-  background:white;border-radius:18px;padding:14px 18px;
-  border:3px solid transparent;cursor:pointer;
-  display:flex;align-items:center;gap:14px;
-  box-shadow:0 4px 14px var(--shadow);
-  transition:all .15s;touch-action:manipulation;
-}
-.diff-card:active{transform:scale(0.97);}
-.diff-card.selected{border-color:var(--pink);background:#fce4ec;}
-.diff-card.selected.easy{border-color:#66bb6a;background:#f1f8e9;}
-.diff-card.selected.hard{border-color:#ff7043;background:#fbe9e7;}
-.diff-card.selected.paws{border-color:#7e57c2;background:#ede7f6;}
-.diff-icon-big{font-size:32px;flex-shrink:0;}
-.diff-card-text{}
-.diff-card-name{font-size:16px;font-weight:900;color:var(--text);}
-.diff-card-desc{font-size:11px;font-weight:700;color:#a0887a;margin-top:2px;}
 
 /* ── LEVEL SELECT ── */
 #level-screen{
@@ -214,13 +189,7 @@ html,body{
   box-shadow:0 2px 8px var(--shadow);
   font-size:11px;font-weight:700;color:var(--text);
 }
-#score-val{font-size:13px;font-weight:900;color:var(--text);}
 #key-indicator{font-size:14px;}
-#diff-badge-hud{font-size:10px;font-weight:900;padding:2px 7px;border-radius:12px;}
-#diff-badge-hud.easy{background:#c8e6c9;color:#2e7d32;}
-#diff-badge-hud.normal{background:#fce4ec;color:#ad1457;}
-#diff-badge-hud.hard{background:#ffe0b2;color:#e65100;}
-#diff-badge-hud.paws{background:#ede7f6;color:#4527a0;}
 
 /* ── GAME CANVAS ── */
 #game-canvas-wrap{
@@ -303,8 +272,8 @@ html,body{
 <div class="screen" id="title-screen">
   <div id="title-cat-preview"><canvas id="titleCatCanvas" width="130" height="130"></canvas></div>
   <div class="title-logo">Neko Day ✨</div>
-  <div class="title-sub">A cozy top-down cat adventure!<br>Find the 🗝️ key · give treats 🦴 to dogs · befriend everyone!</div>
-      <div style="position:absolute;top:14px;right:14px;"><button class="btn btn-grey" style="padding:6px 14px;font-size:13px;" onclick="toggleMusic()" title="Toggle music">🎵 Music</button></div>
+  <div class="title-sub">A cozy top-down cat adventure!<br>Find the 🗝️ key · meet friendly cats · explore every corner!</div>
+      <div style="position:absolute;top:14px;right:14px;display:flex;gap:8px;"><button class="btn btn-grey" style="padding:6px 14px;font-size:13px;" onclick="toggleMusic()" title="Toggle music">🎵 Music</button></div>
   <button class="btn" onclick="showScreen('custom-screen')">Customize Your Cat 🐱</button>
   <button class="btn btn-grey btn-sm" style="margin-top:-4px" onclick="quickPlay()">Quick Play →</button>
 </div>
@@ -366,46 +335,7 @@ html,body{
 
   <div class="btn-row">
     <button class="btn btn-grey btn-sm" onclick="showScreen('title-screen')">← Back</button>
-    <button class="btn btn-sm" onclick="showScreen('diff-screen')">Next →</button>
-  </div>
-</div>
-
-<!-- DIFFICULTY -->
-<div class="screen hidden" id="diff-screen">
-  <h2>Difficulty 🎮</h2>
-  <div class="diff-cards">
-    <div class="diff-card easy selected" data-diff="easy" onclick="selectDiff('easy')">
-      <div class="diff-icon-big">🌸</div>
-      <div class="diff-card-text">
-        <div class="diff-card-name">Easy</div>
-        <div class="diff-card-desc">Slow lazy dogs · treats work easily · max cozy vibes</div>
-      </div>
-    </div>
-    <div class="diff-card normal" data-diff="normal" onclick="selectDiff('normal')">
-      <div class="diff-icon-big">⭐</div>
-      <div class="diff-card-text">
-        <div class="diff-card-name">Normal</div>
-        <div class="diff-card-desc">Balanced fun · dogs need the right treats</div>
-      </div>
-    </div>
-    <div class="diff-card hard" data-diff="hard" onclick="selectDiff('hard')">
-      <div class="diff-icon-big">🔥</div>
-      <div class="diff-card-text">
-        <div class="diff-card-name">Hard</div>
-        <div class="diff-card-desc">Frisky dogs · picky eaters · bring plenty!</div>
-      </div>
-    </div>
-    <div class="diff-card paws" data-diff="paws" onclick="selectDiff('paws')">
-      <div class="diff-icon-big">🐾</div>
-      <div class="diff-card-text">
-        <div class="diff-card-name">Paws of Fury</div>
-        <div class="diff-card-desc">Maximum chaos · very picky dogs · good luck!</div>
-      </div>
-    </div>
-  </div>
-  <div class="btn-row">
-    <button class="btn btn-grey btn-sm" onclick="showScreen('custom-screen')">← Back</button>
-    <button class="btn btn-sm" onclick="goLevelSelect()">Choose Level →</button>
+    <button class="btn btn-sm" onclick="goLevelSelect()">Play →</button>
   </div>
 </div>
 
@@ -417,7 +347,7 @@ html,body{
       <div class="level-icon">🏠</div>
       <div class="level-card-text">
         <div class="level-card-name">Home Sweet Home</div>
-        <div class="level-card-desc">Cosy rooms · scratch furniture · find the key!</div>
+        <div class="level-card-desc">Cosy rooms · friendly cats · find the key!</div>
       </div>
     </div>
     <div class="level-card locked" id="lc-1">
@@ -441,8 +371,15 @@ html,body{
         <div class="level-card-desc">Platform rush · dodge luggage · catch the train!</div>
       </div>
     </div>
+    <div class="level-card unlocked" id="lc-4" onclick="beginLevel(4)">
+      <div class="level-icon">⚽</div>
+      <div class="level-card-text">
+        <div class="level-card-name">Cat Soccer ⚽</div>
+        <div class="level-card-desc">Score 7 goals · dash to kick harder · vs 3 cats!</div>
+      </div>
+    </div>
   </div>
-  <button class="btn btn-grey btn-sm" onclick="showScreen('diff-screen')">← Back</button>
+  <button class="btn btn-grey btn-sm" onclick="showScreen('custom-screen')">← Back</button>
 </div>
 
 <!-- GAME OVER -->
@@ -450,7 +387,6 @@ html,body{
   <div class="result-emoji">😿</div>
   <h2>Nap Time…</h2>
   <div id="go-name" style="font-size:15px;color:#8d6e63;font-weight:700;text-align:center"></div>
-  <div id="go-score" class="result-score"></div>
   <div class="btn-row">
     <button class="btn btn-sm" onclick="retryLevel()">Try Again 🌸</button>
     <button class="btn btn-grey btn-sm" onclick="goLevelSelect()">Levels</button>
@@ -462,7 +398,6 @@ html,body{
   <div class="result-emoji" id="lc-emoji">🎉</div>
   <h2 id="lc-title">Level Complete!</h2>
   <div id="lc-desc" style="font-size:14px;color:#5d4037;font-weight:700;text-align:center;max-width:280px"></div>
-  <div id="lc-score" class="result-score"></div>
   <div class="btn-row">
     <button class="btn btn-green btn-sm" id="lc-next-btn" onclick="nextLevel()">Next Level →</button>
     <button class="btn btn-grey btn-sm" onclick="goLevelSelect()">Levels</button>
@@ -472,12 +407,14 @@ html,body{
 <!-- HUD -->
 <div id="hud">
   <div class="hud-row">
-    <div class="hud-pill">⭐ <span id="score-val">0</span></div>
     <div class="hud-pill"><span id="key-indicator">🔑 ✗</span></div>
-    <div class="hud-pill" id="treat-hud"><span id="treat-display">🦴×0</span></div>
     <div class="hud-pill" id="happy-hud" style="display:none"><span id="happy-display">🌈</span></div>
-    <div class="hud-pill"><span id="diff-badge-hud" class="normal">⭐</span></div>
     <div class="hud-pill" style="cursor:pointer;padding:4px 10px;" onclick="toggleMusic()" id="music-toggle-btn" title="Music: On">🎵</div>
+    <div class="hud-pill" style="cursor:pointer;padding:4px 10px;" onclick="takePhoto()" title="Take Photo (P)">📷</div>
+    <div class="hud-pill" style="cursor:pointer;padding:4px 10px;" onclick="toggleJournal()" title="Sticker Journal (J)">📔</div>
+    <div class="hud-pill" id="watering-hud" style="display:none">🪣</div>
+    <div class="hud-pill" id="daytime-hud" style="font-size:10px">☀️</div>
+    <div class="hud-pill" style="cursor:pointer;padding:4px 10px;" onclick="toggleHelp()" title="Help (H)">❓</div>
   </div>
 </div>
 
@@ -672,6 +609,21 @@ function playPurr() {
     o1.start(t); o1.stop(t+0.8);
     o2.start(t); o2.stop(t+0.8);
     lfo.start(t); lfo.stop(t+0.8);
+  } catch(e){}
+}
+
+function playNapSound() {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    // Gentle lullaby-ish chime
+    [523, 659, 784].forEach((freq, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t+i*0.22);
+      g.gain.linearRampToValueAtTime(0.12, t+i*0.22+0.06);
+      g.gain.exponentialRampToValueAtTime(0.001, t+i*0.22+0.6);
+      o.connect(g); g.connect(ac.destination); o.start(t+i*0.22); o.stop(t+i*0.22+0.7);
+    });
   } catch(e){}
 }
 
@@ -946,6 +898,937 @@ function toggleMusic() {
   }
 }
 
+
+// ─── WEATHER SYSTEM ────────────────────────────────────────────
+const LEVEL_WEATHER = ['rain', 'blossoms', 'dustmotes', 'snow'];
+
+let weatherParticles = [];
+function initWeather(levelIdx) {
+  weatherParticles = [];
+  const type = LEVEL_WEATHER[levelIdx] || 'none';
+  const count = {rain:80, blossoms:40, dustmotes:50, snow:60}[type] || 0;
+  for (let i = 0; i < count; i++) weatherParticles.push(makeWeatherParticle(type, true));
+}
+
+function makeWeatherParticle(type, init=false) {
+  const p = { type };
+  if (type === 'rain') {
+    p.x = Math.random()*CW; p.y = init ? Math.random()*CH : -8;
+    p.vy = 9 + Math.random()*5; p.vx = -1.5 + Math.random()*0.5;
+    p.len = 8 + Math.random()*10; p.alpha = 0.2 + Math.random()*0.3;
+  } else if (type === 'blossoms') {
+    p.x = Math.random()*CW; p.y = init ? Math.random()*CH : -12;
+    p.vx = -0.4 + Math.random()*0.8; p.vy = 0.5 + Math.random()*0.8;
+    p.rot = Math.random()*Math.PI*2; p.rotV = (Math.random()-0.5)*0.04;
+    p.size = 5 + Math.random()*5; p.hue = 340 + Math.random()*20;
+    p.swing = Math.random()*Math.PI*2; p.swingS = 0.02+Math.random()*0.02;
+  } else if (type === 'dustmotes') {
+    p.x = Math.random()*CW; p.y = Math.random()*CH;
+    p.vx = (Math.random()-0.5)*0.3; p.vy = (Math.random()-0.5)*0.2;
+    p.r = 1 + Math.random()*2; p.alpha = 0.08 + Math.random()*0.15;
+    p.pulsePhase = Math.random()*Math.PI*2;
+  } else if (type === 'snow') {
+    p.x = Math.random()*CW; p.y = init ? Math.random()*CH : -8;
+    p.vx = (Math.random()-0.5)*0.6; p.vy = 0.6 + Math.random()*0.8;
+    p.r = 2 + Math.random()*3; p.alpha = 0.5 + Math.random()*0.4;
+    p.swing = Math.random()*Math.PI*2; p.swingS = 0.01+Math.random()*0.02;
+    p.settled = false;
+  }
+  return p;
+}
+
+function updateWeather() {
+  if (!gs || !weatherParticles.length) return;
+  const t = gs.time;
+  for (let i = weatherParticles.length - 1; i >= 0; i--) {
+    const p = weatherParticles[i];
+    if (p.type === 'rain') {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y > CH + 10) weatherParticles[i] = makeWeatherParticle('rain');
+    } else if (p.type === 'blossoms') {
+      p.swing += p.swingS; p.rot += p.rotV;
+      p.x += p.vx + Math.sin(p.swing)*0.4; p.y += p.vy;
+      if (p.y > CH + 14) weatherParticles[i] = makeWeatherParticle('blossoms');
+    } else if (p.type === 'dustmotes') {
+      p.pulsePhase += 0.02;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = CW; if (p.x > CW) p.x = 0;
+      if (p.y < 0) p.y = CH; if (p.y > CH) p.y = 0;
+    } else if (p.type === 'snow') {
+      p.swing += p.swingS;
+      p.x += p.vx + Math.sin(p.swing)*0.5; p.y += p.vy;
+      if (p.y > CH + 8) weatherParticles[i] = makeWeatherParticle('snow');
+    }
+  }
+}
+
+function drawWeather() {
+  if (!weatherParticles.length) return;
+  ctx.save();
+  for (const p of weatherParticles) {
+    if (p.type === 'rain') {
+      ctx.strokeStyle = `rgba(180,220,255,${p.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + p.vx * 1.5, p.y - p.len);
+      ctx.stroke();
+    } else if (p.type === 'blossoms') {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = 0.75;
+      // 5-petal flower shape
+      ctx.fillStyle = `hsl(${p.hue},80%,80%)`;
+      for (let k = 0; k < 5; k++) {
+        ctx.save(); ctx.rotate(k * Math.PI * 2 / 5);
+        ctx.beginPath(); ctx.ellipse(0, -p.size*0.55, p.size*0.3, p.size*0.5, 0, 0, Math.PI*2);
+        ctx.fill(); ctx.restore();
+      }
+      ctx.fillStyle = `hsl(50,90%,85%)`; // center
+      ctx.beginPath(); ctx.arc(0, 0, p.size*0.22, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    } else if (p.type === 'dustmotes') {
+      const a = p.alpha * (0.7 + Math.sin(p.pulsePhase)*0.3);
+      ctx.fillStyle = `rgba(255,245,220,${a})`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+    } else if (p.type === 'snow') {
+      ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  // Rain window overlay for home level
+  if (weatherParticles[0]?.type === 'rain') {
+    ctx.fillStyle = 'rgba(180,210,255,0.04)';
+    ctx.fillRect(0, 0, CW, CH);
+  }
+  ctx.restore();
+}
+
+// ─── NAP SPOTS ────────────────────────────────────────────────
+function spawnNapSpots(levelIdx, floorCells, usedC, rng) {
+  const opts = [
+    [['🛏️','bed'],['🛋️','couch'],['🧸','cushion']],
+    [['🌿','grass'],['🪵','log'],['🌸','petal-bed']],
+    [['🪑','chair'],['📋','mat'],['🧺','basket']],
+    [['🎒','bench'],['📰','paper-pile'],['💺','seat']],
+  ][levelIdx] || [['🌸','spot'],['✨','nook'],['🍃','leaf-bed']];
+  const spots = [];
+  const zone = floorCells.filter(p => p.r > 4 && p.r < floorCells.reduce((m,p)=>Math.max(m,p.r),0)-4);
+  for (let i = 0; i < 3; i++) {
+    let cell;
+    for (let a = 0; a < 40; a++) {
+      cell = zone[Math.floor(rng()*zone.length)];
+      if (cell && !usedC.has(`${cell.r},${cell.c}`)) break;
+    }
+    if (!cell) continue;
+    usedC.add(`${cell.r},${cell.c}`);
+    const [emoji, name] = opts[i % opts.length];
+    spots.push({
+      emoji, name, wx: cell.c*TILE+TILE/2, wy: cell.r*TILE+TILE/2,
+      napTimer: 0, napping: false, napAnim: 0, zzzPhase: 0,
+    });
+  }
+  return spots;
+}
+
+function updateNapSpots() {
+  if (!gs.napSpots) return;
+  const cat = gs.cat;
+  for (const s of gs.napSpots) {
+    const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+    const moving = cat.moving || cat.dashFrames > 0;
+    if (dist < 26 && !moving) {
+      s.napTimer++;
+      if (s.napTimer > 90 && !s.napping) {
+        s.napping = true; s.napAnim = 0;
+        playNapSound();
+      }
+    } else {
+      if (s.napping && (moving || dist > 32)) {
+        s.napping = false;
+        cat.happyFrames = Math.max(cat.happyFrames, HAPPY_DURATION);
+        spawnParticles(cat.wx, cat.wy, '🌈');
+        spawnParticles(cat.wx, cat.wy, '✨');
+      }
+      s.napTimer = 0;
+    }
+    if (s.napping) { s.napAnim++; s.zzzPhase += 0.06; }
+  }
+}
+
+function drawNapSpots(t) {
+  if (!gs.napSpots) return;
+  const cat = gs.cat;
+  for (const s of gs.napSpots) {
+    ctx.save(); ctx.translate(s.wx, s.wy);
+    // Glow under spot
+    const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+    if (dist < 55) {
+      const nearAlpha = (55-dist)/55*0.18;
+      ctx.fillStyle=`rgba(255,220,180,${nearAlpha})`;
+      ctx.beginPath(); ctx.arc(0,0,22,0,Math.PI*2); ctx.fill();
+    }
+    ctx.font='20px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(s.emoji, 0, 0);
+    // Name hint
+    if (dist < 55 && !s.napping) {
+      ctx.font='bold 8px Nunito,sans-serif'; ctx.fillStyle='rgba(120,80,60,0.7)';
+      ctx.fillText('Nap here~', 0, -18);
+    }
+    // Zzz floating up when napping
+    if (s.napping) {
+      const zs = [0, 0.7, 1.4];
+      for (let i=0; i<3; i++) {
+        const phase = (s.zzzPhase + zs[i]) % (Math.PI*2);
+        const progress = phase / (Math.PI*2);
+        const zy = -20 - progress*28;
+        const zx = Math.sin(phase*2)*8 + 10;
+        const alpha = progress < 0.7 ? progress/0.7 : 1 - (progress-0.7)/0.3;
+        const fsize = 9 + i*3;
+        ctx.globalAlpha = alpha * 0.8;
+        ctx.font = `${fsize}px serif`;
+        ctx.fillText('z', zx, zy);
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+  }
+}
+
+// ─── WATERING + BLOOMING ──────────────────────────────────────
+function spawnWaterFeature(levelIdx, floorCells, interactables, usedC, rng) {
+  // One watering can per level + mark some plants as waterable
+  const zone = floorCells.filter(p => p.r > 6);
+  let cell;
+  for (let a = 0; a < 40; a++) {
+    cell = zone[Math.floor(rng()*zone.length)];
+    if (cell && !usedC.has(`${cell.r},${cell.c}`)) break;
+  }
+  const can = cell ? {
+    type:'wateringcan', emoji:'🪣', wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
+    collected:false, pts:0, en:0, bob:rng()*Math.PI*2,
+    moveSpeed:0, moveDir:1, moveMin:0, moveMax:0, golden:false, treatType:null,
+  } : null;
+  if (can) { usedC.add(`${cell.r},${cell.c}`); }
+  // Mark 2-3 random plants as wilted/waterable
+  const plants = interactables.filter(o => o.type==='plant');
+  const numWilt = Math.min(plants.length, 2+Math.floor(rng()*2));
+  for (let i=0; i<numWilt; i++) {
+    const idx = Math.floor(rng()*plants.length);
+    plants[idx].wilted = true; plants[idx].emoji = '🥀'; plants[idx].bloomed = false;
+  }
+  return can;
+}
+
+function tryWaterPlant(cat) {
+  if (!gs.hasWateringCan) return;
+  // Water nearest wilted plant within scratch range
+  for (const obj of gs.interactables) {
+    if (!obj.wilted || obj.bloomed) continue;
+    const dist = Math.hypot(cat.wx-obj.wx, cat.wy-obj.wy);
+    if (dist < SCRATCH_RANGE + 10) {
+      obj.bloomed = true; obj.emoji = '🌸'; obj.wilted = false;
+      obj.animTick = 30;
+      spawnParticles(obj.wx, obj.wy, '🌸');
+      spawnParticles(obj.wx, obj.wy, '💧');
+      spawnPop(obj.wx, obj.wy, 'Bloomed! 🌸', '#f48fb1');
+      playCollect();
+      return;
+    }
+  }
+}
+
+// ─── FISH TANK ────────────────────────────────────────────────
+let fishTapAnim = 0; // global anim timer for fish tap
+function checkFishTank() {
+  if (!gs.fishTank) return;
+  const cat = gs.cat;
+  const dist = Math.hypot(cat.wx-gs.fishTank.wx, cat.wy-gs.fishTank.wy);
+  if (dist < 38 && fishTapAnim === 0) {
+    fishTapAnim = 80;
+    spawnParticles(gs.fishTank.wx, gs.fishTank.wy-8, '💧');
+    spawnParticles(gs.fishTank.wx+8, gs.fishTank.wy, '🐟');
+    spawnPop(gs.fishTank.wx, gs.fishTank.wy, 'Tap tap! 🐾', '#80deea');
+    // Soft bloop sound
+    try {
+      const ac = getAudio(), t = ac.currentTime;
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(520,t); o.frequency.exponentialRampToValueAtTime(200,t+0.18);
+      g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.25);
+    } catch(e){}
+  }
+  if (fishTapAnim > 0) fishTapAnim--;
+}
+
+function drawFishTank(t) {
+  if (!gs.fishTank) return;
+  const ft = gs.fishTank;
+  ctx.save(); ctx.translate(ft.wx, ft.wy);
+  // Tank body
+  ctx.fillStyle='rgba(100,200,255,0.18)';
+  ctx.strokeStyle='rgba(100,200,255,0.5)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(-18,-14,36,28,4); ctx.fill(); ctx.stroke();
+  // Water shimmer
+  ctx.fillStyle='rgba(150,220,255,0.12)';
+  ctx.beginPath(); ctx.roundRect(-18,-14,36,10,{upperLeft:4,upperRight:4}); ctx.fill();
+  // Fish swimming
+  const fx = Math.sin(t*0.06)*10;
+  ctx.font='12px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.save(); if(fx<0) ctx.scale(-1,1);
+  ctx.fillText('🐠', fx, 2); ctx.restore();
+  ctx.font='8px serif'; ctx.fillText('🐡', Math.sin(t*0.04+1)*8, -4);
+  // Paw tap overlay
+  if (fishTapAnim > 0) {
+    const prog = fishTapAnim/80;
+    ctx.globalAlpha = prog;
+    ctx.font='14px serif';
+    ctx.fillText('🐾', 16, -10-prog*6);
+  }
+  ctx.restore();
+}
+
+// ─── PHOTO MODE ───────────────────────────────────────────────
+let photoFlash = 0;
+let shutterSound = () => {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    // Click sound
+    const buf = ac.createBuffer(1, ac.sampleRate*0.05, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,0.5);
+    const src = ac.createBufferSource();
+    const g = ac.createGain(); g.gain.value=0.3;
+    src.buffer=buf; src.connect(g); g.connect(ac.destination); src.start(t);
+    // Wind-down whir
+    const o = ac.createOscillator(), og = ac.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(1800,t+0.05); o.frequency.exponentialRampToValueAtTime(400,t+0.25);
+    og.gain.setValueAtTime(0.1,t+0.05); og.gain.exponentialRampToValueAtTime(0.001,t+0.28);
+    o.connect(og); og.connect(ac.destination); o.start(t+0.05); o.stop(t+0.3);
+  } catch(e){}
+};
+
+function takePhoto() {
+  if (!gs?.running) return;
+  shutterSound();
+  photoFlash = 30;
+  // Composite current game canvas into a polaroid
+  setTimeout(() => {
+    try {
+      const tmp = document.createElement('canvas');
+      tmp.width = CW + 20; tmp.height = CH + 60;
+      const tx = tmp.getContext('2d');
+      // Polaroid background
+      tx.fillStyle='#fff9f0'; tx.fillRect(0,0,tmp.width,tmp.height);
+      tx.fillStyle='#f0e0d0'; tx.fillRect(5,5,tmp.width-10,tmp.height-10);
+      // Game screenshot
+      tx.drawImage(canvas, 10, 10, CW, CH);
+      // Polaroid border
+      tx.strokeStyle='#d4b896'; tx.lineWidth=3;
+      tx.strokeRect(10,10,CW,CH);
+      // Label
+      tx.font='bold 14px Georgia,serif'; tx.fillStyle='#8d6e63';
+      tx.textAlign='center';
+      tx.fillText('Neko Day ✨', tmp.width/2, CH+35);
+      const levelName = ['Home','Park','Building','Station','Soccer'][currentLevel]||'';
+      tx.font='10px Georgia,serif'; tx.fillStyle='#a08070';
+      tx.fillText(levelName, tmp.width/2, CH+52);
+      // Download
+      const link = document.createElement('a');
+      link.download = `neko-day-photo-${Date.now()}.png`;
+      link.href = tmp.toDataURL('image/png');
+      link.click();
+    } catch(e){ console.log('Photo error:', e); }
+  }, 80);
+}
+
+function drawPhotoFlash() {
+  if (photoFlash <= 0) return;
+  const alpha = photoFlash/30;
+  ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+  ctx.fillRect(0,0,CW,CH);
+  // Polaroid frame hint
+  if (photoFlash > 18) {
+    ctx.strokeStyle=`rgba(200,180,160,${alpha*0.8})`;
+    ctx.lineWidth=12; ctx.strokeRect(6,6,CW-12,CH-12);
+  }
+  photoFlash--;
+}
+// ─── END PHOTO MODE ───────────────────────────────────────────
+
+// ─── STICKER JOURNAL ──────────────────────────────────────────
+// Stickers are hidden in each level — collect them by walking near
+const LEVEL_STICKERS = [
+  ['🏠','🛁','🪴','🍵','🕯️'],   // Home
+  ['🌳','🌸','🐦','🌿','☀️'],   // Park
+  ['💼','📎','☕','🏙️','🖥️'],   // Building
+  ['🚆','🎫','🧳','🗺️','⌚'],   // Station
+];
+
+let collectedStickers = {}; // levelIdx -> [emoji array]
+let journalOpen = false;
+let journalAnim = 0;
+
+async function loadJournal() {
+  try {
+    const res = await window.storage.get('neko-journal');
+    if (res) collectedStickers = JSON.parse(res.value);
+  } catch(e) { collectedStickers = {}; }
+}
+
+async function saveJournal() {
+  try { await window.storage.set('neko-journal', JSON.stringify(collectedStickers)); } catch(e){}
+}
+
+function spawnLevelStickers(levelIdx, floorCells, usedC, rng) {
+  const stickers = LEVEL_STICKERS[levelIdx] || [];
+  const items = [];
+  const zone = floorCells.filter(p => p.r > 5 && p.r < floorCells.reduce((m,p)=>Math.max(m,p.r),0)-3);
+  for (let i=0; i<Math.min(3, stickers.length); i++) {
+    let cell;
+    for (let a=0;a<40;a++) {
+      cell = zone[Math.floor(rng()*zone.length)];
+      if (cell && !usedC.has(`${cell.r},${cell.c}`)) break;
+    }
+    if (!cell) continue;
+    usedC.add(`${cell.r},${cell.c}`);
+    items.push({
+      emoji: stickers[i], wx: cell.c*TILE+TILE/2, wy: cell.r*TILE+TILE/2,
+      collected:false, revealed:false, bob:rng()*Math.PI*2,
+    });
+  }
+  return items;
+}
+
+function updateStickerPickup() {
+  if (!gs.stickers) return;
+  const cat = gs.cat;
+  for (const s of gs.stickers) {
+    if (s.collected) continue;
+    const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+    if (dist < 50) s.revealed = true;
+    if (dist < 22 && s.revealed) {
+      s.collected = true;
+      if (!collectedStickers[currentLevel]) collectedStickers[currentLevel] = [];
+      if (!collectedStickers[currentLevel].includes(s.emoji))
+        collectedStickers[currentLevel].push(s.emoji);
+      saveJournal();
+      playKeyPickup();
+      spawnPop(s.wx, s.wy, `${s.emoji} Sticker!`, '#ffd700');
+      spawnParticles(s.wx, s.wy, s.emoji);
+      spawnParticles(s.wx, s.wy, '✨');
+    }
+  }
+}
+
+function drawStickerItems(t) {
+  if (!gs.stickers) return;
+  const cat = gs.cat;
+  for (const s of gs.stickers) {
+    if (s.collected) continue;
+    const dist = Math.hypot(cat.wx-s.wx, cat.wy-s.wy);
+    const nearFactor = Math.max(0, 1-dist/70);
+    ctx.save(); ctx.translate(s.wx, s.wy);
+    if (s.revealed) {
+      const bob = Math.sin(t*0.1+s.bob)*3;
+      ctx.translate(0, bob);
+      ctx.shadowColor='#ffd700'; ctx.shadowBlur=10+Math.sin(t*0.12)*5;
+      ctx.font='18px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(s.emoji, 0, 0);
+      ctx.shadowBlur=0;
+      ctx.font='bold 7px Nunito,sans-serif'; ctx.fillStyle='#ffd700';
+      ctx.fillText('STICKER', 0, -16);
+    } else if (nearFactor > 0) {
+      ctx.globalAlpha = nearFactor*0.4;
+      ctx.font='9px serif'; ctx.textAlign='center';
+      ctx.fillText('✨', Math.cos(t*0.1)*8, Math.sin(t*0.1)*8);
+    }
+    ctx.restore();
+  }
+}
+
+function toggleJournal() {
+  journalOpen = !journalOpen;
+  journalAnim = 0;
+}
+
+function drawJournal(t) {
+  if (!journalOpen) return;
+  journalAnim++;
+  const progress = Math.min(1, journalAnim/18);
+  const ease = progress < 0.5 ? 2*progress*progress : -1+(4-2*progress)*progress;
+  const w=260, h=200;
+  const x=(CW-w)/2, y=(CH-h)/2;
+  ctx.save();
+  ctx.translate(CW/2, CH/2); ctx.scale(ease, ease); ctx.translate(-CW/2, -CH/2);
+  // Page shadow
+  ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.beginPath();
+  ctx.roundRect(x+6, y+6, w, h, 12); ctx.fill();
+  // Page
+  const pg = ctx.createLinearGradient(x,y,x+w,y+h);
+  pg.addColorStop(0,'#fff9f0'); pg.addColorStop(1,'#ffeedd');
+  ctx.fillStyle=pg; ctx.beginPath(); ctx.roundRect(x,y,w,h,12); ctx.fill();
+  ctx.strokeStyle='#d4b896'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(x,y,w,h,12); ctx.stroke();
+  // Binding
+  ctx.fillStyle='#c4956a'; ctx.beginPath();
+  ctx.roundRect(x+12,y,16,h,{upperLeft:12,bottomLeft:12}); ctx.fill();
+  // Lines
+  ctx.strokeStyle='rgba(180,150,120,0.25)'; ctx.lineWidth=1;
+  for (let ly=y+35; ly<y+h-15; ly+=18) {
+    ctx.beginPath(); ctx.moveTo(x+36,ly); ctx.lineTo(x+w-16,ly); ctx.stroke();
+  }
+  // Title
+  ctx.font='bold 14px Georgia,serif'; ctx.fillStyle='#8d5524'; ctx.textAlign='center';
+  ctx.fillText('✨ Sticker Journal', x+w/2, y+22);
+  // Stickers grid per level
+  let sx=x+42, sy=y+42;
+  const levelNames=['🏠','🌳','🏢','🚉'];
+  for (let lv=0; lv<4; lv++) {
+    const stks = collectedStickers[lv] || [];
+    ctx.font='10px Nunito,sans-serif'; ctx.fillStyle='#a08070'; ctx.textAlign='left';
+    ctx.fillText(levelNames[lv], sx, sy-4);
+    for (let si=0; si<5; si++) {
+      const stk = stks[si];
+      // Slot
+      ctx.fillStyle = stk ? 'rgba(255,220,160,0.4)' : 'rgba(200,180,150,0.15)';
+      ctx.strokeStyle='rgba(180,150,100,0.3)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.roundRect(sx+si*33, sy+4, 28, 28, 4); ctx.fill(); ctx.stroke();
+      if (stk) {
+        ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(stk, sx+si*33+14, sy+18);
+      } else {
+        ctx.font='12px serif'; ctx.fillStyle='rgba(180,150,120,0.4)';
+        ctx.fillText('?', sx+si*33+14, sy+18);
+      }
+    }
+    sy += 44;
+  }
+  // Close hint
+  ctx.font='10px Nunito,sans-serif'; ctx.fillStyle='#b09070'; ctx.textAlign='center';
+  ctx.fillText('Press J or 📔 to close', x+w/2, y+h-10);
+  ctx.restore();
+}
+// ─── END STICKER JOURNAL ──────────────────────────────────────
+
+
+// ─── HIDDEN ROOMS ────────────────────────────────────────────
+function spawnHiddenRoom(levelIdx, grid, R, floorCells, usedC, rng) {
+  // Find a wall cluster near the middle and carve a small secret room
+  const triggers = [
+    {emoji:'📚', name:'bookshelf'},
+    {emoji:'🪞', name:'mirror'},
+    {emoji:'🗄️', name:'cabinet'},
+    {emoji:'🪟', name:'panel'},
+  ];
+  const t = triggers[levelIdx % triggers.length];
+  // Find a floor cell adjacent to a wall to place trigger
+  const candidates = floorCells.filter(p => {
+    if (usedC.has(`${p.r},${p.c}`)) return false;
+    // Must have a wall neighbor
+    return [[p.r-1,p.c],[p.r+1,p.c],[p.r,p.c-1],[p.r,p.c+1]]
+      .some(([nr,nc]) => nr>=0&&nr<R&&nc>=0&&nc<COLS && grid[nr][nc]===1);
+  });
+  if (!candidates.length) return null;
+  const cell = candidates[Math.floor(rng()*Math.min(candidates.length,20))];
+  usedC.add(`${cell.r},${cell.c}`);
+  // Carve the secret room (3x3) beyond an adjacent wall
+  const wallDirs = [[0,1],[0,-1],[1,0],[-1,0]];
+  let carved = false, roomCenter = null;
+  for (const [dr,dc] of wallDirs) {
+    const wr=cell.r+dr, wc=cell.c+dc;
+    if (wr<2||wr>R-3||wc<2||wc>COLS-3) continue;
+    if (grid[wr][wc]!==1) continue;
+    // Try to carve a 3x3 room beyond
+    const ok = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]]
+      .every(([rrr,rcc])=>{
+        const rr=wr+dr+rrr, rc=wc+dc+rcc;
+        return rr>=1&&rr<R-1&&rc>=1&&rc<COLS-1;
+      });
+    if (!ok) continue;
+    // Carve room
+    for (const [rrr,rcc] of [[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]]) {
+      grid[wr+dr+rrr][wc+dc+rcc] = 0;
+    }
+    grid[wr][wc] = 0; // open passage
+    roomCenter = {r:wr+dr, c:wc+dc};
+    carved = true;
+    break;
+  }
+  if (!carved) return null;
+  return {
+    ...t,
+    wx: cell.c*TILE+TILE/2, wy: cell.r*TILE+TILE/2,
+    open: false, openAnim: 0, activated: false,
+    roomCenter, roomX: roomCenter.c*TILE+TILE/2, roomY: roomCenter.r*TILE+TILE/2,
+    // Decor inside the secret room
+    decor: ['✨','🌸','💎'].map((e,i)=>({
+      emoji:e, wx:roomCenter.c*TILE+TILE/2+(i-1)*TILE*0.7, wy:roomCenter.r*TILE+TILE/2,
+    })),
+  };
+}
+
+function updateHiddenRoom() {
+  if (!gs.hiddenRoom || gs.hiddenRoom.open) return;
+  // Opened via scratch (handled in checkScratchHits via activateInteractable)
+}
+
+function drawHiddenRoom(t) {
+  if (!gs.hiddenRoom) return;
+  const r = gs.hiddenRoom;
+  // Trigger object
+  ctx.save(); ctx.translate(r.wx, r.wy);
+  ctx.font='20px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  if (!r.activated) {
+    ctx.shadowColor='rgba(200,150,255,0.5)';
+    ctx.shadowBlur=6+Math.sin(t*0.08)*4;
+  }
+  ctx.fillText(r.emoji, 0, 0);
+  if (!r.activated) {
+    ctx.shadowBlur=0;
+    ctx.font='bold 7px Nunito,sans-serif'; ctx.fillStyle='rgba(150,100,200,0.7)';
+    const cat = gs.cat;
+    if (Math.hypot(cat.wx-r.wx,cat.wy-r.wy)<60)
+      ctx.fillText('scratch me~', 0, -18);
+  }
+  ctx.restore();
+  // Secret room decor
+  if (r.open) {
+    r.openAnim = Math.min(r.openAnim+1, 60);
+    const prog = r.openAnim/60;
+    for (const d of r.decor) {
+      ctx.save(); ctx.translate(d.wx, d.wy);
+      ctx.globalAlpha = prog;
+      const bob = Math.sin(t*0.08+d.wx)*3;
+      ctx.translate(0, bob - 20*(1-prog));
+      ctx.shadowColor='#ffd700'; ctx.shadowBlur=8;
+      ctx.font='18px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(d.emoji, 0, 0);
+      ctx.restore();
+    }
+    // Sparkle aura around room
+    if (r.openAnim < 50) {
+      ctx.save();
+      ctx.globalAlpha=(50-r.openAnim)/50*0.5;
+      ctx.fillStyle='rgba(200,150,255,0.4)';
+      ctx.beginPath(); ctx.arc(r.roomX, r.roomY, TILE*1.8, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+}
+// ─── END HIDDEN ROOMS ─────────────────────────────────────────
+
+// ─── END FISH TANK ────────────────────────────────────────────
+
+// ─── END WATERING ─────────────────────────────────────────────
+
+// ─── END NAP SPOTS ───────────────────────────────────────────
+
+// ─── END WEATHER ──────────────────────────────────────────────
+
+
+// ─── HELP MENU ────────────────────────────────────────────────
+let helpOpen = false;
+let helpAnim = 0;
+let helpScroll = 0;
+
+function toggleHelp() {
+  helpOpen = !helpOpen;
+  helpAnim = 0;
+  helpScroll = 0;
+}
+
+const HELP_SECTIONS = [
+  {
+    icon: '🎮', title: 'Controls',
+    items: [
+      ['Move',       'Arrow keys / WASD  ·  Joystick (mobile)'],
+      ['Dash',       'Double-tap a direction  ·  Quick flick joystick'],
+      ['Scratch/Pet','X or Z  ·  scratch button (mobile)'],
+      ['Photo',      'P key  ·  📷 button'],
+      ['Journal',    'J key  ·  📔 button'],
+      ['Help',       'H key  ·  ❓ button'],
+      ['Music',      '🎵 button to toggle on/off'],
+    ]
+  },
+  {
+    icon: '🗝️', title: 'Your Goal',
+    items: [
+      ['Find the key', 'The 🗝️ glows and sparkles — hidden in each level'],
+      ['Reach the door','With the key, find the 🚪 door to complete the level'],
+    ]
+  },
+  {
+    icon: '🐱', title: 'Friendly Cats',
+    items: [
+      ['Meet them',   'Named cats roam each level — walk close to see their name'],
+      ['Touch them',  'Brush past a cat and it will purr, mew, chirp or trill 💕'],
+      ['Scratch near','Use X/Z close to a cat for an extra heart reaction'],
+    ]
+  },
+  {
+    icon: '👤', title: 'Humans',
+    items: [
+      ['Treat givers', 'Walk up and they hand you a 🐟 fish snack'],
+      ['Petters',      'Some humans pet your cat — activates the 🌈 rainbow boost!'],
+      ['Rainbow boost','Speed boost + glowing aura for 8 seconds'],
+    ]
+  },
+  {
+    icon: '😴', title: 'Napping',
+    items: [
+      ['Find a spot',  'Look for 🛏️ 🛋️ 🌿 🪵 nap spots on the floor'],
+      ['Fall asleep',  'Stand still on one for ~1.5s — cat curls up with Zzz'],
+      ['Wake up',      'Move to wake — you get the 🌈 rainbow boost as a reward!'],
+    ]
+  },
+  {
+    icon: '🪣', title: 'Watering Can',
+    items: [
+      ['Find it',     'One 🪣 watering can hidden per level'],
+      ['Use it',      'Walk near a wilted 🥀 plant and press X/Z to water it'],
+      ['Watch it grow','The plant blooms into 🌸 with a petal burst!'],
+    ]
+  },
+  {
+    icon: '🐟', title: 'Fish Tank',
+    items: [
+      ['Find it',     'One fish tank near the start of each level'],
+      ['Tap the glass','Walk up and your cat automatically paw-taps the glass'],
+      ['Watch the fish','🐠 🐡 swim back and forth inside!'],
+    ]
+  },
+  {
+    icon: '📚', title: 'Hidden Rooms',
+    items: [
+      ['Find the trigger','Look for glowing 📚🪞🗄️🪟 objects on walls'],
+      ['Open it',         'Scratch near it (X/Z) to reveal a secret room!'],
+      ['Explore inside',  'Secret rooms hold glowing treasures ✨💎🌸'],
+    ]
+  },
+  {
+    icon: '🌟', title: 'Secrets & Stickers',
+    items: [
+      ['Hidden secrets','Walk everywhere — items shimmer ✨ when close'],
+      ['Stickers',      'Collect 3 stickers per level — glow gold when near'],
+      ['Your journal',  'Press J or 📔 to see all collected stickers'],
+    ]
+  },
+  {
+    icon: '🌅', title: 'World & Weather',
+    items: [
+      ['Day/Night',   'World cycles: Dawn 🌅 · Day ☀️ · Dusk 🌇 · Night 🌙'],
+      ['Stars',       'Look up at night — stars appear and twinkle!'],
+      ['Weather',     'Home: 🌧️  ·  Park: 🌸  ·  Building: ✨  ·  Station: ❄️'],
+    ]
+  },
+  {
+    icon: '📷', title: 'Photo Mode',
+    items: [
+      ['Take a photo', 'Press P or 📷 to capture the current scene'],
+      ['Polaroid',     'Downloads as a PNG with a cozy polaroid border'],
+      ['Best shots',   'Try capturing cats, blooming flowers, or night scenes!'],
+    ]
+  },
+];
+function drawHelp(t) {
+  if (!helpOpen) return;
+  if (!t && t !== 0) t = Date.now() * 0.016;
+  helpAnim = Math.min(helpAnim + 1, 14);
+  const ease = helpAnim / 14;
+  const smooth = ease < 0.5 ? 2*ease*ease : -1+(4-2*ease)*ease;
+
+  // Full-screen semi-transparent backdrop
+  ctx.save();
+  ctx.fillStyle = `rgba(30,20,50,${0.82 * smooth})`;
+  ctx.fillRect(0, 0, CW, CH);
+
+  const PW = Math.min(CW - 24, 340);
+  const PH = CH - 32;
+  const PX = (CW - PW) / 2;
+  const PY = 16;
+
+  // Panel
+  ctx.save();
+  ctx.translate(CW/2, CH/2);
+  ctx.scale(0.85 + 0.15*smooth, 0.85 + 0.15*smooth);
+  ctx.translate(-CW/2, -CH/2);
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.beginPath(); ctx.roundRect(PX+4, PY+4, PW, PH, 16); ctx.fill();
+
+  // Panel background — warm parchment
+  const pg = ctx.createLinearGradient(PX, PY, PX+PW, PY+PH);
+  pg.addColorStop(0, '#fff8f0');
+  pg.addColorStop(1, '#ffeedd');
+  ctx.fillStyle = pg;
+  ctx.beginPath(); ctx.roundRect(PX, PY, PW, PH, 16); ctx.fill();
+
+  // Decorative border
+  ctx.strokeStyle = '#d4a574';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.roundRect(PX+4, PY+4, PW-8, PH-8, 12); ctx.stroke();
+
+  // Header
+  ctx.fillStyle = '#5d3a1a';
+  ctx.font = 'bold 17px Nunito, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('✨ How to Play ✨', CW/2, PY + 28);
+
+  // Divider
+  ctx.strokeStyle = '#d4a574';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(PX + 20, PY + 38);
+  ctx.lineTo(PX + PW - 20, PY + 38);
+  ctx.stroke();
+
+  // Scrollable content area — use clipping
+  const contentY = PY + 46;
+  const contentH = PH - 60;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(PX + 8, contentY, PW - 16, contentH);
+  ctx.clip();
+
+  const SECTION_GAP = 10;
+  const ITEM_H = 28;
+  const SECTION_TITLE_H = 22;
+  let totalH = 0;
+  for (const s of HELP_SECTIONS) {
+    totalH += SECTION_TITLE_H + s.items.length * ITEM_H + SECTION_GAP;
+  }
+  const maxScroll = Math.max(0, totalH - contentH);
+
+  // Scroll via mouse wheel / touch (handled separately)
+  let yOff = contentY - helpScroll;
+
+  for (const sec of HELP_SECTIONS) {
+    if (yOff + SECTION_TITLE_H > contentY && yOff < contentY + contentH) {
+      // Section header
+      ctx.fillStyle = 'rgba(212,165,116,0.25)';
+      ctx.beginPath();
+      ctx.roundRect(PX+10, yOff, PW-20, SECTION_TITLE_H, 6);
+      ctx.fill();
+
+      ctx.font = 'bold 11px Nunito, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#7b4c1e';
+      ctx.fillText(`${sec.icon} ${sec.title}`, PX + 18, yOff + 15);
+    }
+    yOff += SECTION_TITLE_H;
+
+    for (const [label, desc] of sec.items) {
+      if (yOff + ITEM_H > contentY && yOff < contentY + contentH) {
+        // Key chip
+        ctx.fillStyle = '#f3e5d0';
+        ctx.strokeStyle = '#d4a574';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(PX + 14, yOff + 5, 62, 17, 4);
+        ctx.fill(); ctx.stroke();
+
+        ctx.font = 'bold 8.5px Nunito, sans-serif';
+        ctx.fillStyle = '#8b5e3c';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, PX + 45, yOff + 16);
+
+        // Description
+        ctx.font = '9px Nunito, sans-serif';
+        ctx.fillStyle = '#5a3820';
+        ctx.textAlign = 'left';
+        ctx.fillText(desc, PX + 84, yOff + 16);
+      }
+      yOff += ITEM_H;
+    }
+    yOff += SECTION_GAP;
+  }
+
+  ctx.restore(); // unclip
+
+  // Scroll indicator
+  if (maxScroll > 0) {
+    const trackH = contentH - 10;
+    const thumbH = Math.max(30, trackH * (contentH / totalH));
+    const thumbY = contentY + 5 + (helpScroll / maxScroll) * (trackH - thumbH);
+    ctx.fillStyle = 'rgba(212,165,116,0.3)';
+    ctx.beginPath(); ctx.roundRect(PX+PW-14, contentY+5, 6, trackH, 3); ctx.fill();
+    ctx.fillStyle = '#d4a574';
+    ctx.beginPath(); ctx.roundRect(PX+PW-14, thumbY, 6, thumbH, 3); ctx.fill();
+  }
+
+  // Footer
+  ctx.font = '9px Nunito, sans-serif';
+  ctx.fillStyle = '#a08060';
+  ctx.textAlign = 'center';
+  ctx.fillText('Scroll ↕  ·  Press H or ❓ to close', CW/2, PY + PH - 8);
+
+  ctx.restore(); // unscale
+  ctx.restore(); // main save
+
+  // Store maxScroll for event handlers
+  drawHelp._maxScroll = maxScroll;
+}
+
+// ─── END HELP MENU ────────────────────────────────────────────
+
+// ─── DAY/NIGHT CYCLE ──────────────────────────────────────────
+// Cycles over ~8 minutes (28800 frames at 60fps), or manually via HUD
+// Phases: dawn(0-0.15) → day(0.15-0.5) → dusk(0.5-0.7) → night(0.7-1)
+const DAY_CYCLE_LEN = 3600; // ~1 min per full cycle — cozy but visible
+const TIME_OVERLAYS = [
+  // [phase_start, r,g,b, alpha, label]
+  [0.00, 255,180,120, 0.10, 'Dawn 🌅'],
+  [0.15, 255,255,220, 0.00, 'Day ☀️'],
+  [0.50, 255,150, 80, 0.12, 'Dusk 🌇'],
+  [0.70,  30, 20, 80, 0.30, 'Night 🌙'],
+  [0.90, 255,180,120, 0.08, 'Dawn 🌅'],
+];
+
+function getDayPhase() {
+  if (!gs) return 0.2;
+  return (gs.time % DAY_CYCLE_LEN) / DAY_CYCLE_LEN;
+}
+
+function getDayOverlay() {
+  const ph = getDayPhase();
+  // Find surrounding keyframes and lerp
+  const kf = TIME_OVERLAYS;
+  let a = kf[kf.length-1], b = kf[0];
+  for (let i = 0; i < kf.length-1; i++) {
+    if (ph >= kf[i][0] && ph < kf[i+1][0]) { a = kf[i]; b = kf[i+1]; break; }
+  }
+  const t = (ph - a[0]) / Math.max(0.001, b[0] - a[0]);
+  const r = Math.round(a[1] + (b[1]-a[1])*t);
+  const g = Math.round(a[2] + (b[2]-a[2])*t);
+  const bv = Math.round(a[3] + (b[3]-a[3])*t);
+  const al = a[4] + (b[4]-a[4])*t;
+  return {r,g,b:bv,al, label: ph < 0.15||ph >= 0.9 ? 'Dawn 🌅' : ph < 0.5 ? 'Day ☀️' : ph < 0.7 ? 'Dusk 🌇' : 'Night 🌙'};
+}
+
+function drawDayNightOverlay() {
+  const ov = getDayOverlay();
+  if (ov.al < 0.01) return;
+  ctx.fillStyle = `rgba(${ov.r},${ov.g},${ov.b},${ov.al.toFixed(3)})`;
+  ctx.fillRect(0, 0, CW, CH);
+  // Stars at night
+  if (getDayPhase() > 0.65) {
+    const starAlpha = Math.min(1, (getDayPhase()-0.65)/0.1) * 0.6;
+    ctx.fillStyle = `rgba(255,255,255,${starAlpha})`;
+    // Fixed stars (seeded)
+    for (let i = 0; i < 28; i++) {
+      const sx = (i*137.5 % CW);
+      const sy = (i*97.3 % (CH*0.6));
+      const pulse = 0.5 + Math.sin(gs.time*0.05 + i)*0.5;
+      ctx.globalAlpha = starAlpha * pulse;
+      ctx.beginPath(); ctx.arc(sx, sy, 1.2, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+// ─── END DAY/NIGHT ────────────────────────────────────────────
+// ─── END HELP MENU ────────────────────────────────────────────
+
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════
@@ -964,12 +1847,7 @@ const HAPPY_SPEED_MULT = 1.18;
 const SCRATCH_ARC = Math.PI * 1.1;
 const SCRATCH_COOLDOWN = 24;
 
-const DIFF = {
-  easy:   {dogSpeed:0.5,  treatBonus:1},  // wrong treat still works
-  normal: {dogSpeed:0.8,  treatBonus:0},  // must use right treat
-  hard:   {dogSpeed:1.25, treatBonus:-1}, // needs +1 extra treat
-  paws:   {dogSpeed:1.85, treatBonus:-2}, // needs +2 extra treats
-};
+const CAT_COUNT_MULT = 1.0; // no difficulty — always cozy
 
 const CAT_COLORS = [
   {body:'#fff9f0',dark:'#ffe0cc',stroke:'#ffb3a0'},
@@ -984,7 +1862,6 @@ const EYE_COLORS = ['#43a047','#1e88e5','#fb8c00','#8e24aa','het'];
 
 let catCfg = {colorIdx:0, pattern:'solid', eyeIdx:0, accessory:'none'};
 let catName = 'Mochi';
-let difficulty = 'easy';
 let currentLevel = 0;
 let unlockedLevels = 1;
 
@@ -1175,10 +2052,6 @@ function setCatProp(prop, val) {
   updatePreview();
 }
 
-function selectDiff(d) {
-  difficulty = d;
-  document.querySelectorAll('.diff-card').forEach(c => c.classList.toggle('selected', c.dataset.diff === d));
-}
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -1202,12 +2075,14 @@ function startPreviewAnim() {
 }
 function stopPreviewAnim() { if (previewAnimId) { cancelAnimationFrame(previewAnimId); previewAnimId = null; } }
 
+function quickPlay() { goLevelSelect(); }
 function goLevelSelect() {
+  if(soccerRaf){cancelAnimationFrame(soccerRaf);soccerRaf=null;} soccerState=null;
   catName = document.getElementById('cat-name-input').value.trim() || 'Mochi';
   updateLevelCards(); showScreen('level-screen');
 }
 function updateLevelCards() {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     const el = document.getElementById('lc-' + i); if (!el) continue;
     const unlocked = i < unlockedLevels;
     el.classList.toggle('locked', !unlocked); el.classList.toggle('unlocked', unlocked);
@@ -1215,10 +2090,719 @@ function updateLevelCards() {
   }
   const el0 = document.getElementById('lc-0');
   if (el0) { el0.classList.remove('locked'); el0.classList.add('unlocked'); el0.onclick = () => beginLevel(0); }
+  const el4 = document.getElementById('lc-4');
+  if (el4) { el4.classList.remove('locked'); el4.classList.add('unlocked'); el4.onclick = () => beginLevel(4); }
 }
 function quickPlay() { catName = document.getElementById('cat-name-input')?.value.trim() || 'Mochi'; updateLevelCards(); showScreen('level-screen'); }
-function retryLevel() { beginLevel(currentLevel); }
-function nextLevel() { if (currentLevel + 1 < 4) beginLevel(currentLevel + 1); else goLevelSelect(); }
+function retryLevel() { if(soccerRaf){cancelAnimationFrame(soccerRaf);soccerRaf=null;} beginLevel(currentLevel); }
+function nextLevel() { if (currentLevel + 1 < 5) beginLevel(currentLevel + 1); else goLevelSelect(); }
+
+
+// ═══════════════════════════════════════════════════════════════
+// ⚽ CAT SOCCER — LEVEL 4
+// ═══════════════════════════════════════════════════════════════
+
+// Field dimensions (in pixels, no tile system — rendered directly)
+const SF = {
+  W: 420, H: 660,        // full canvas
+  FX: 30, FY: 60,        // field left/top
+  FW: 360, FH: 520,      // field width/height
+  GW: 90, GD: 22,        // goal width, goal depth
+  GOALS_TO_WIN: 7,
+};
+// Derived
+SF.GX = SF.FX + SF.FW/2 - SF.GW/2; // goal X (centred)
+SF.TOP_GY    = SF.FY - SF.GD;       // top goal Y
+SF.BOTTOM_GY = SF.FY + SF.FH;       // bottom goal mouth Y
+
+let soccerState = null; // null = not playing soccer
+
+function beginSoccer() {
+  stopMusic();
+  currentLevel = 4;
+  document.getElementById('hud').style.display = 'block';
+  document.getElementById('game-canvas-wrap').style.display = 'block';
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+
+  const catColors = [2, 1, 3, 6, 4]; // grey, orange, black, pink, cream
+  soccerState = {
+    running: false,  // starts paused until kickoff button
+    kickedOff: false,
+    time: 0,
+    playerScore: 0,
+    aiScore: 0,
+    celebration: 0,       // countdown after a goal
+    celebrationMsg: '',
+    celebrationColor: '',
+    winner: null,          // 'player' | 'ai' | null
+    lastScorer: null,
+
+    ball: {
+      x: SF.FX + SF.FW/2,
+      y: SF.FY + SF.FH/2,
+      vx: 0, vy: 0,
+      r: 11,
+    },
+
+    // Player cat
+    player: {
+      x: SF.FX + SF.FW/2,
+      y: SF.FY + SF.FH * 0.78,
+      vx: 0, vy: 0,
+      r: 14,
+      facingAngle: Math.PI,
+      moving: false,
+      dashFrames: 0, dashCooldown: 0, dashDx: 0, dashDy: 0,
+      cfg: { colorIdx: catCfg.colorIdx, pattern: catCfg.pattern, eyeIdx: catCfg.eyeIdx, accessory: catCfg.accessory },
+      isPlayer: true,
+    },
+
+    // Single opponent cat — roams whole field
+    aiCats: [
+      { x: SF.FX + SF.FW*0.5, y: SF.FY + SF.FH*0.22, vx:0, vy:0, r:14,
+        facingAngle:0, moving:false, dashFrames:0, dashCooldown:0,
+        cfg:{colorIdx:1,pattern:'tabby',eyeIdx:2,accessory:'none'},
+        role:'roamer', thinkTimer:0, name:'Mikan', team:'enemy' },
+    ],
+    teammate: null,
+
+    particles: [],
+    joystick: {active:false, dx:0, dy:0},
+    scratchPressed: false,
+  };
+
+  if (musicEnabled) startMusic();
+  if (raf) cancelAnimationFrame(raf);
+  soccerLoop();
+}
+
+function resetSoccerPositions(scoredTeam) {
+  const ss = soccerState;
+  ss.ball.x = SF.FX + SF.FW/2;
+  ss.ball.y = SF.FY + SF.FH/2;
+  ss.ball.vx = (Math.random()-0.5)*1.5;
+  ss.ball.vy = scoredTeam === 'player' ? -1.5 : 1.5;
+
+  ss.player.x = SF.FX + SF.FW/2;
+  ss.player.y = SF.FY + SF.FH*0.78;
+  ss.player.vx = ss.player.vy = 0;
+  ss.player.dashFrames = 0;
+
+  const ai0 = ss.aiCats[0];
+  ai0.x = SF.FX+SF.FW*0.5; ai0.y = SF.FY+SF.FH*0.22;
+  ai0.vx = ai0.vy = 0; ai0.dashFrames = 0;
+  // Pause for kickoff button after each goal
+  ss.running = false;
+  ss.kickedOff = false;
+}
+
+// ── Soccer physics update ─────────────────────────────────────
+function updateSoccer() {
+  const ss = soccerState;
+  if (!ss || !ss.running) return;
+  ss.time++;
+
+  // Kickoff pause — wait for button press
+  if (!ss.running) return;
+
+  // Celebration pause after goal
+  if (ss.celebration > 0) {
+    ss.celebration--;
+    if (ss.celebration === 0) {
+      if (ss.winner) { endSoccer(); return; }
+      resetSoccerPositions(ss.lastScorer);
+    }
+    updateSoccerParticles();
+    return;
+  }
+
+  // ── Player input ──
+  const p = ss.player;
+  let ix=0, iy=0;
+  if (keys['ArrowLeft']||keys['KeyA']) ix-=1;
+  if (keys['ArrowRight']||keys['KeyD']) ix+=1;
+  if (keys['ArrowUp']||keys['KeyW']) iy-=1;
+  if (keys['ArrowDown']||keys['KeyS']) iy+=1;
+  if (ss.joystick.active) { ix+=ss.joystick.dx; iy+=ss.joystick.dy; }
+  const ilen = Math.hypot(ix,iy); if (ilen>1){ix/=ilen;iy/=ilen;}
+  p.moving = ilen>0.1;
+
+  const PLAYER_SPEED = 3.2;
+  if (p.dashFrames > 0) {
+    p.dashFrames--;
+    p.x += p.dashDx * 8.5;
+    p.y += p.dashDy * 8.5;
+  } else {
+    p.x += ix * PLAYER_SPEED;
+    p.y += iy * PLAYER_SPEED;
+  }
+  if (p.dashCooldown > 0) p.dashCooldown--;
+  if (p.moving) p.facingAngle = Math.atan2(iy,ix)+Math.PI/2;
+
+  // Clamp player to full field
+  p.x = Math.max(SF.FX+p.r, Math.min(SF.FX+SF.FW-p.r, p.x));
+  p.y = Math.max(SF.FY+p.r, Math.min(SF.FY+SF.FH-p.r, p.y));
+
+  // ── AI cats ──
+  ss.aiCats.forEach(ai => updateSoccerAI(ai, ss));
+
+  // ── Ball physics ──
+  const b = ss.ball;
+  const FRICTION = 0.991;
+  b.x += b.vx; b.y += b.vy;
+  b.vx *= FRICTION; b.vy *= FRICTION;
+
+  // Ball wall bounce (field edges, excluding goals)
+  // Left/right walls
+  if (b.x - b.r < SF.FX)  { b.x = SF.FX+b.r;         b.vx = Math.abs(b.vx)*0.92; playSoccerBounce(); }
+  if (b.x + b.r > SF.FX+SF.FW) { b.x = SF.FX+SF.FW-b.r; b.vx = -Math.abs(b.vx)*0.92; playSoccerBounce(); }
+
+  // Top wall — but allow through goal opening
+  if (b.y - b.r < SF.FY) {
+    const inGoal = b.x > SF.GX && b.x < SF.GX+SF.GW;
+    if (inGoal) {
+      // GOAL for player!
+      if (b.y - b.r < SF.TOP_GY - b.r) {
+        soccerGoal('player');
+        return;
+      }
+    } else {
+      b.y = SF.FY+b.r; b.vy = Math.abs(b.vy)*0.92; playSoccerBounce();
+    }
+  }
+  // Bottom wall — allow through goal opening
+  if (b.y + b.r > SF.FY+SF.FH) {
+    const inGoal = b.x > SF.GX && b.x < SF.GX+SF.GW;
+    if (inGoal) {
+      if (b.y + b.r > SF.BOTTOM_GY + SF.GD + b.r) {
+        soccerGoal('ai');
+        return;
+      }
+    } else {
+      b.y = SF.FY+SF.FH-b.r; b.vy = -Math.abs(b.vy)*0.92; playSoccerBounce();
+    }
+  }
+
+  // ── Ball-cat collisions ──
+  [p, ...ss.aiCats].forEach(cat => {
+    const dx = b.x-cat.x, dy = b.y-cat.y;
+    const dist = Math.hypot(dx,dy);
+    const minDist = b.r + cat.r;
+    if (dist < minDist && dist > 0.1) {
+      const nx = dx/dist, ny = dy/dist;
+      b.x = cat.x + nx*minDist;
+      b.y = cat.y + ny*minDist;
+      const isDashing = cat.dashFrames > 0 || cat.justDashed;
+      const catSpd = cat.isPlayer ? Math.hypot(ix,iy)*PLAYER_SPEED : Math.hypot(cat.vx,cat.vy);
+      const kickPow = isDashing ? 15 : catSpd*0.8 + 2.5;
+      const existingDot = b.vx*nx + b.vy*ny;
+      if (existingDot < kickPow) {
+        b.vx += (kickPow - existingDot) * nx;
+        b.vy += (kickPow - existingDot) * ny;
+      }
+      playSoccerKick();
+    }
+    // Clear justDashed after collision check so it lasts exactly one frame
+    cat.justDashed = false;
+  });
+
+  // Speed cap on ball
+  const bspd = Math.hypot(b.vx,b.vy);
+  if (bspd > 22) { b.vx = b.vx/bspd*22; b.vy = b.vy/bspd*22; }
+
+  updateSoccerParticles();
+}
+
+function updateSoccerAI(ai, ss) {
+  // Smart AI: positions BEHIND the ball relative to player goal, then kicks
+  const b = ss.ball;
+  const AI_SPEED = 2.5;
+
+  // Player goal is at the BOTTOM — so AI wants to be north of the ball
+  // to kick it southward into the goal.
+  const GOAL_GX = SF.FX + SF.FW/2;   // goal centre x
+  const GOAL_GY = SF.FY + SF.FH;     // goal mouth y (bottom)
+
+  // Vector from ball toward player goal
+  const toBallGoalDx = GOAL_GX - b.x;
+  const toBallGoalDy = GOAL_GY - b.y;
+  const toBallGoalLen = Math.hypot(toBallGoalDx, toBallGoalDy) || 1;
+  const toBallGoalNx = toBallGoalDx / toBallGoalLen;
+  const toBallGoalNy = toBallGoalDy / toBallGoalLen;
+
+  // Ideal approach position: stand 32px BEHIND the ball (opposite to goal)
+  const APPROACH_DIST = 34;
+  const approachX = b.x - toBallGoalNx * APPROACH_DIST;
+  const approachY = b.y - toBallGoalNy * APPROACH_DIST;
+
+  const bdist = Math.hypot(b.x - ai.x, b.y - ai.y);
+  const approachDist = Math.hypot(approachX - ai.x, approachY - ai.y);
+
+  let targetX, targetY;
+
+  if (approachDist > 20 && bdist > 40) {
+    // Far from ball — move toward approach position
+    targetX = approachX;
+    targetY = approachY;
+  } else if (approachDist > 12) {
+    // Getting close — blend between approach pos and ball
+    const t = 1 - approachDist / 20;
+    targetX = approachX * (1-t) + b.x * t;
+    targetY = approachY * (1-t) + b.y * t;
+  } else {
+    // In position — drive through the ball toward goal
+    targetX = GOAL_GX;
+    targetY = GOAL_GY;
+  }
+
+  moveSoccerCat(ai, targetX, targetY, AI_SPEED);
+
+  // Dash kick: only when well-positioned behind ball (approach dist small)
+  // and lined up toward goal
+  if (bdist < 36 && approachDist < 28 && ai.dashCooldown === 0) {
+    // Kick direction: from AI toward goal (not from AI toward ball centre)
+    const kdx = GOAL_GX - ai.x;
+    const kdy = GOAL_GY - ai.y;
+    const klen = Math.hypot(kdx, kdy) || 1;
+    ai.dashDx = kdx / klen;
+    ai.dashDy = kdy / klen;
+    ai.dashFrames = 10;
+    ai.dashCooldown = 90;
+    ai.justDashed = true;
+  }
+  applyDash(ai);
+
+  // Clamp to full field
+  ai.x = Math.max(SF.FX + ai.r, Math.min(SF.FX + SF.FW - ai.r, ai.x));
+  ai.y = Math.max(SF.FY + ai.r, Math.min(SF.FY + SF.FH - ai.r, ai.y));
+}
+
+
+function moveSoccerCat(cat, targetX, targetY, speed) {
+  const dx = targetX-cat.x, dy = targetY-cat.y;
+  const dist = Math.hypot(dx,dy);
+  if (dist > 5) {
+    const nx=dx/dist, ny=dy/dist;
+    cat.vx=nx*speed; cat.vy=ny*speed;
+    cat.x+=cat.vx; cat.y+=cat.vy;
+    cat.facingAngle=Math.atan2(ny,nx)+Math.PI/2;
+    cat.moving=true;
+  } else {
+    cat.moving=false;
+  }
+}
+
+function applyDash(cat) {
+  if (cat.dashFrames > 0) {
+    cat.dashFrames--;
+    cat.x += cat.dashDx*7; cat.y += cat.dashDy*7;
+  }
+  if (cat.dashCooldown > 0) cat.dashCooldown--;
+}
+
+function soccerGoal(scorer) {
+  const ss = soccerState;
+  ss.ball.vx = ss.ball.vy = 0;
+
+  if (scorer === 'player') {
+    ss.playerScore++;
+    ss.celebrationMsg = `⚽ GOAL! ${ss.playerScore}–${ss.aiScore}`;
+    ss.celebrationColor = '#4caf50';
+    spawnSoccerParticles(ss.ball.x, ss.ball.y, ['⚽','🎉','✨','💚','⭐']);
+    playSoccerGoal();
+  } else {
+    ss.aiScore++;
+    ss.celebrationMsg = `😿 They scored! ${ss.playerScore}–${ss.aiScore}`;
+    ss.celebrationColor = '#ef5350';
+    spawnSoccerParticles(ss.ball.x, ss.ball.y, ['😹','⚽','💨']);
+    playSoccerGoal(false);
+  }
+  ss.lastScorer = scorer;
+  ss.celebration = 120;
+
+  // Check win condition
+  if (ss.playerScore >= SF.GOALS_TO_WIN) { ss.winner = 'player'; ss.celebration = 160; }
+  else if (ss.aiScore >= SF.GOALS_TO_WIN) { ss.winner = 'ai';     ss.celebration = 160; }
+}
+
+function endSoccer() {
+  const ss = soccerState;
+  ss.running = false;
+  stopMusic();
+  if (ss.winner === 'player') {
+    // Use level complete screen
+    document.getElementById('lc-emoji').textContent = '🏆';
+    document.getElementById('lc-title').textContent = 'You Win! 🐱⚽';
+    document.getElementById('lc-desc').textContent = `${catName} beat Mikan ${ss.playerScore}–${ss.aiScore}! Purrfect!`;
+    document.getElementById('lc-next-btn').style.display = 'none';
+    document.getElementById('hud').style.display='none';
+    document.getElementById('game-canvas-wrap').style.display='none';
+    showScreen('levelcomplete-screen');
+    spawnSoccerParticles(SF.FX+SF.FW/2, SF.FY+SF.FH/2, ['🏆','⚽','🎉','✨','🌟','💛']);
+  } else {
+    document.getElementById('go-name').textContent = `Final score: ${ss.playerScore}–${ss.aiScore} 😿`;
+    document.getElementById('hud').style.display='none';
+    document.getElementById('game-canvas-wrap').style.display='none';
+    showScreen('gameover-screen');
+  }
+}
+
+// ── Soccer sounds ─────────────────────────────────────────────
+function playSoccerKick() {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type='square'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(90,t+0.07);
+    g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.09);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.1);
+  } catch(e){}
+}
+function playSoccerBounce() {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(180,t+0.06);
+    g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.07);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.08);
+  } catch(e){}
+}
+function playSoccerGoal(isPlayer=true) {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    const notes = isPlayer ? [523,659,784,1047] : [392,330,262];
+    notes.forEach((freq,i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type='triangle'; o.frequency.value=freq;
+      g.gain.setValueAtTime(0,t+i*0.12); g.gain.linearRampToValueAtTime(0.18,t+i*0.12+0.04);
+      g.gain.exponentialRampToValueAtTime(0.001,t+i*0.12+0.4);
+      o.connect(g); g.connect(ac.destination); o.start(t+i*0.12); o.stop(t+i*0.12+0.45);
+    });
+  } catch(e){}
+}
+
+// ── Soccer particles ──────────────────────────────────────────
+function spawnSoccerParticles(x, y, emojis) {
+  if (!soccerState) return;
+  for (let i=0; i<12; i++) {
+    const a = Math.random()*Math.PI*2;
+    const spd = 2+Math.random()*5;
+    soccerState.particles.push({
+      x, y, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
+      emoji: emojis[Math.floor(Math.random()*emojis.length)],
+      life:1, size:16+Math.random()*10,
+    });
+  }
+}
+function updateSoccerParticles() {
+  if (!soccerState) return;
+  soccerState.particles = soccerState.particles.filter(p=>p.life>0);
+  for (const p of soccerState.particles) {
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=0.022;
+  }
+}
+
+// ── Soccer render ─────────────────────────────────────────────
+function renderSoccer() {
+  if (!soccerState) return;
+  const ss = soccerState;
+  const t = ss.time;
+  ctx.clearRect(0,0,CW,CH);
+
+  // ── Pitch ──
+  // Grass background
+  ctx.fillStyle='#388e3c';
+  ctx.fillRect(0,0,CW,CH);
+
+  // Grass stripes
+  for (let s=0; s<6; s++) {
+    ctx.fillStyle = s%2===0 ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.04)';
+    ctx.fillRect(SF.FX, SF.FY + s*(SF.FH/6), SF.FW, SF.FH/6);
+  }
+
+  // Field border
+  ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=3;
+  ctx.strokeRect(SF.FX, SF.FY, SF.FW, SF.FH);
+
+  // Centre line
+  ctx.beginPath(); ctx.moveTo(SF.FX, SF.FY+SF.FH/2); ctx.lineTo(SF.FX+SF.FW, SF.FY+SF.FH/2); ctx.stroke();
+
+  // Centre circle
+  ctx.beginPath(); ctx.arc(SF.FX+SF.FW/2, SF.FY+SF.FH/2, 46, 0, Math.PI*2); ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.08)'; ctx.fill();
+
+  // Centre dot
+  ctx.fillStyle='rgba(255,255,255,0.8)';
+  ctx.beginPath(); ctx.arc(SF.FX+SF.FW/2, SF.FY+SF.FH/2, 4, 0, Math.PI*2); ctx.fill();
+
+  // Penalty arcs (top and bottom)
+  ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2;
+  ctx.fillStyle='rgba(255,255,255,0.04)';
+  // Top penalty box
+  ctx.beginPath(); ctx.rect(SF.FX+SF.FW*0.25, SF.FY, SF.FW*0.5, SF.FH*0.16); ctx.fill(); ctx.stroke();
+  // Bottom penalty box
+  ctx.beginPath(); ctx.rect(SF.FX+SF.FW*0.25, SF.FY+SF.FH*0.84, SF.FW*0.5, SF.FH*0.16); ctx.fill(); ctx.stroke();
+
+  // ── Goals ──
+  // Top goal (AI scores here → bad, player attacks here)
+  drawSoccerGoal(SF.GX, SF.TOP_GY, SF.GW, SF.GD, '#ef5350', true);
+  // Bottom goal (AI scores in player's goal)
+  drawSoccerGoal(SF.GX, SF.BOTTOM_GY, SF.GW, SF.GD, '#4caf50', false);
+
+  // Goal labels
+  ctx.font='bold 11px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.fillText('🎯 Attack!', SF.FX+SF.FW/2, SF.FY-SF.GD-8);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.fillText('🛡️ Defend!', SF.FX+SF.FW/2, SF.BOTTOM_GY+SF.GD+18);
+
+  // ── Opponent cat ──
+  for (const ai of ss.aiCats) {
+    drawCatTopDown(ctx, ai.x, ai.y, ai.cfg, t, ai.facingAngle, ai.moving, 0);
+    drawSoccerNameTag(ai.x, ai.y, ai.name, '#ef9a9a');
+  }
+
+
+
+  // ── Player cat ──
+  const p = ss.player;
+  // Rainbow glow during dash
+  if (p.dashFrames > 0) {
+    for (let i=0;i<3;i++) {
+      const hue = (t*4+i*120)%360;
+      ctx.save(); ctx.globalAlpha=0.35; ctx.strokeStyle=`hsl(${hue},100%,60%)`;
+      ctx.lineWidth=3; ctx.beginPath(); ctx.arc(p.x,p.y,20+i*5,0,Math.PI*2); ctx.stroke(); ctx.restore();
+    }
+  }
+  drawCatTopDown(ctx, p.x, p.y, p.cfg, t, p.facingAngle, p.moving, 0);
+
+  // ── Ball ──
+  const b = ss.ball;
+  const ballSpd = Math.hypot(b.vx,b.vy);
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.2)';
+  ctx.beginPath(); ctx.ellipse(b.x+3, b.y+4, b.r*0.85, b.r*0.5, 0, 0, Math.PI*2); ctx.fill();
+  // Ball glow when moving fast
+  if (ballSpd > 5) {
+    ctx.save(); ctx.globalAlpha=0.3;
+    ctx.fillStyle='rgba(255,255,100,0.5)';
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r+5, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  // Ball spin indicator
+  const spinAngle = (b.x + b.y) * 0.06;
+  ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(spinAngle);
+  // White ball base
+  ctx.fillStyle='white'; ctx.shadowColor='rgba(0,0,0,0.3)'; ctx.shadowBlur=4;
+  ctx.beginPath(); ctx.arc(0,0,b.r,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+  // Classic soccer pattern (pentagons approximated)
+  ctx.fillStyle='#222';
+  const pts=[[0,-7],[6,5],[-6,5]]; // simple 3-point star pattern
+  ctx.beginPath();
+  for(const [px2,py2] of pts){
+    ctx.moveTo(px2,py2); ctx.arc(px2,py2,2.8,0,Math.PI*2);
+  }
+  ctx.fill();
+  ctx.restore();
+
+  // ── Particles ──
+  for (const p2 of ss.particles) {
+    ctx.save(); ctx.globalAlpha=p2.life;
+    ctx.font=p2.size+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p2.emoji, p2.x, p2.y); ctx.restore();
+  }
+
+  // ── Scoreboard ──
+  drawSoccerHUD(ss, t);
+
+  // ── Celebration overlay ──
+  if (ss.celebration > 0 && !ss.winner) {
+    const alpha = Math.min(1, ss.celebration/30) * Math.min(1, ss.celebration/30);
+    ctx.save(); ctx.globalAlpha=alpha*0.85;
+    ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(0,0,CW,CH);
+    ctx.globalAlpha=alpha;
+    ctx.font='bold 28px Nunito,sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle=ss.celebrationColor;
+    ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=12;
+    ctx.fillText(ss.celebrationMsg, CW/2, CH/2);
+    ctx.restore();
+  }
+
+  // ── Winner overlay ──
+  if (ss.winner && ss.celebration > 0) {
+    const alpha = Math.min(1, (160-ss.celebration)/30);
+    ctx.save(); ctx.globalAlpha=alpha;
+    ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(0,0,CW,CH);
+    ctx.font='bold 34px Nunito,sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle = ss.winner==='player' ? '#ffd700' : '#ef9a9a';
+    ctx.shadowColor='rgba(0,0,0,0.7)'; ctx.shadowBlur=16;
+    ctx.fillText(ss.winner==='player' ? '🏆 You Win!' : '😿 They Win!', CW/2, CH/2-20);
+    ctx.font='18px Nunito,sans-serif';
+    ctx.fillStyle='white'; ctx.shadowBlur=8;
+    ctx.fillText(`${ss.playerScore} – ${ss.aiScore}`, CW/2, CH/2+24);
+    ctx.restore();
+  }
+
+  // ── Kickoff overlay ──
+  if (!ss.running && !ss.winner) {
+    const isFirst = ss.playerScore === 0 && ss.aiScore === 0;
+    // Dim
+    ctx.fillStyle = 'rgba(0,0,0,0.52)';
+    ctx.fillRect(0, 0, CW, CH);
+    // Card
+    const cw = 240, ch = isFirst ? 170 : 130;
+    const cx2 = (CW-cw)/2, cy2 = (CH-ch)/2 - 20;
+    ctx.fillStyle = '#fff9f0';
+    ctx.beginPath(); ctx.roundRect(cx2, cy2, cw, ch, 14); ctx.fill();
+    ctx.strokeStyle = '#d4a574'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(cx2, cy2, cw, ch, 14); ctx.stroke();
+    // Emoji + title
+    ctx.textAlign = 'center';
+    if (isFirst) {
+      ctx.font = '32px serif'; ctx.fillText('⚽', CW/2, cy2+44);
+      ctx.font = 'bold 16px Nunito,sans-serif'; ctx.fillStyle = '#5d3a1a';
+      ctx.fillText('Cat Soccer!', CW/2, cy2+70);
+      ctx.font = '10px Nunito,sans-serif'; ctx.fillStyle = '#a08060';
+      ctx.fillText('Dash toward the ball to kick hard', CW/2, cy2+90);
+      ctx.fillText(`Score ${SF.GOALS_TO_WIN} goals to win`, CW/2, cy2+106);
+    } else {
+      const lastMsg = ss.lastScorer === 'player'
+        ? `⚽ You scored! ${ss.playerScore}–${ss.aiScore}`
+        : `😿 Mikan scored! ${ss.playerScore}–${ss.aiScore}`;
+      ctx.font = 'bold 14px Nunito,sans-serif'; ctx.fillStyle = '#5d3a1a';
+      ctx.fillText(lastMsg, CW/2, cy2+44);
+      ctx.font = '10px Nunito,sans-serif'; ctx.fillStyle = '#a08060';
+      ctx.fillText('Positions reset — ready?', CW/2, cy2+64);
+    }
+    // Kickoff button
+    const btnW = 140, btnH = 36;
+    const btnX = (CW-btnW)/2, btnY = cy2+ch-52;
+    const pulse = 0.85 + Math.sin(ss.time*0.12)*0.15;
+    ctx.save(); ctx.translate(CW/2, btnY+btnH/2); ctx.scale(pulse,pulse); ctx.translate(-CW/2, -(btnY+btnH/2));
+    ctx.fillStyle = '#66bb6a';
+    ctx.beginPath(); ctx.roundRect(btnX, btnY, btnW, btnH, 10); ctx.fill();
+    ctx.strokeStyle = '#43a047'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(btnX, btnY, btnW, btnH, 10); ctx.stroke();
+    ctx.font = 'bold 14px Nunito,sans-serif'; ctx.fillStyle = 'white';
+    ctx.fillText(isFirst ? '🟢 Kick Off!' : '🟢 Play!', CW/2, btnY+24);
+    ctx.restore();
+    // Store button bounds for click detection
+    renderSoccer._kickBtnY = btnY; renderSoccer._kickBtnH = btnH;
+    renderSoccer._kickBtnX = btnX; renderSoccer._kickBtnW = btnW;
+  }
+
+  drawPhotoFlash();
+  drawHelp(t);
+}
+
+function drawSoccerNameTag(x, y, name, color) {
+  ctx.save();
+  ctx.fillStyle=color+'cc';
+  ctx.beginPath(); ctx.roundRect(x-16, y-30, 32, 13, 3); ctx.fill();
+  ctx.font='bold 8px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillStyle='white';
+  ctx.fillText(name, x, y-20);
+  ctx.restore();
+}
+
+function drawSoccerGoal(gx, gy, gw, gd, color, isTop) {
+  // Goal frame
+  ctx.strokeStyle=color; ctx.lineWidth=4;
+  ctx.fillStyle=`${color}22`;
+  if (isTop) {
+    ctx.beginPath();
+    ctx.moveTo(gx, gy+gd);
+    ctx.lineTo(gx, gy);
+    ctx.lineTo(gx+gw, gy);
+    ctx.lineTo(gx+gw, gy+gd);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.lineTo(gx, gy+gd);
+    ctx.lineTo(gx+gw, gy+gd);
+    ctx.lineTo(gx+gw, gy);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  // Net lines
+  ctx.strokeStyle=`${color}44`; ctx.lineWidth=1;
+  for (let i=1; i<4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(gx+gw/4*i, gy);
+    ctx.lineTo(gx+gw/4*i, isTop ? gy+gd : gy+gd);
+    ctx.stroke();
+  }
+  const netY1 = isTop ? gy : gy+gd/3;
+  ctx.beginPath(); ctx.moveTo(gx, netY1); ctx.lineTo(gx+gw, netY1); ctx.stroke();
+}
+
+function drawSoccerHUD(ss, t) {
+  // Top bar
+  ctx.fillStyle='rgba(0,0,0,0.65)';
+  ctx.beginPath(); ctx.roundRect(SF.FX+SF.FW/2-90, 8, 180, 44, 10); ctx.fill();
+
+  ctx.textAlign='center';
+  // Score
+  ctx.font='bold 26px Nunito,sans-serif';
+  ctx.fillStyle='white';
+  ctx.fillText(`${ss.playerScore}`, SF.FX+SF.FW/2-30, 42);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='18px Nunito,sans-serif';
+  ctx.fillText('–', SF.FX+SF.FW/2, 42);
+  ctx.font='bold 26px Nunito,sans-serif';
+  ctx.fillStyle='white';
+  ctx.fillText(`${ss.aiScore}`, SF.FX+SF.FW/2+30, 42);
+
+  // "You" and "Cats" labels
+  ctx.font='bold 8px Nunito,sans-serif';
+  ctx.fillStyle='#a5d6a7';
+  ctx.fillText(catName.toUpperCase(), SF.FX+SF.FW/2-32, 20);
+  ctx.fillStyle='#ef9a9a';
+  ctx.fillText('MIKAN', SF.FX+SF.FW/2+32, 20);
+
+  // Goal target
+  ctx.font='10px Nunito,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.fillText(`First to ${SF.GOALS_TO_WIN}`, SF.FX+SF.FW/2, 60);
+
+  // Dash cooldown bar (bottom right)
+  const p = ss.player;
+  if (p.dashCooldown > 0) {
+    const barW = 80, barH = 8;
+    const bx = SF.FX+SF.FW-barW-8, by = SF.FY+SF.FH+10;
+    ctx.fillStyle='rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.roundRect(bx,by,barW,barH,4); ctx.fill();
+    const pct = 1 - p.dashCooldown/90;
+    ctx.fillStyle='#80deea';
+    ctx.beginPath(); ctx.roundRect(bx,by,barW*pct,barH,4); ctx.fill();
+    ctx.font='8px Nunito,sans-serif'; ctx.fillStyle='white'; ctx.textAlign='right';
+    ctx.fillText('⚡ Dash', bx+barW, by-2);
+  }
+}
+
+// ── Soccer game loop ──────────────────────────────────────────
+let soccerRaf = null;
+function kickOff() {
+  if (!soccerState) return;
+  soccerState.running = true;
+  soccerState.kickedOff = true;
+  // Give ball a gentle random nudge to start
+  const angle = Math.PI/2 + (Math.random()-0.5)*0.8;
+  const side = Math.random() > 0.5 ? 1 : -1;
+  soccerState.ball.vx = Math.cos(angle)*side*2;
+  soccerState.ball.vy = Math.sin(angle)*2.5;
+}
+
+function soccerLoop() {
+  soccerRaf = requestAnimationFrame(soccerLoop);
+  updateSoccer();
+  renderSoccer();
+}
+
+// (soccer dash handled inside triggerDash below)
+
+// ═══════════════════════════════════════════════════════════════
+// END CAT SOCCER
+// ═══════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════
 // LEVEL DATA
@@ -1227,7 +2811,7 @@ const LEVEL_DEFS = [
   { name:'Home Sweet Home', icon:'🏠', theme:'home', rows:32,
     floorTile:{fill:'#efebe9', alt:'#e8ddd8', line:'#d7ccc8'},
     wallFill:'#bcaaa4', elevFill:'#fff9f0', elevStroke:'#ffb3a0',
-    completeTxt:'You found the cat door! 🐱🏠', dogCount:3,
+    completeTxt:'You found the cat door! 🐱✨', catCount:3,
     collectEmojis:['🐟','🥛','🍣','🧶','🪆'],
     secretEmojis:['🐠','🧸','💎'],
     doorStyle:'home',
@@ -1235,7 +2819,7 @@ const LEVEL_DEFS = [
   { name:'Neighbourhood Park', icon:'🌳', theme:'park', rows:36,
     floorTile:{fill:'#c8e6c9', alt:'#b2dfdb', line:'#a5d6a7'},
     wallFill:'#388e3c', elevFill:'#e8f5e9', elevStroke:'#66bb6a',
-    completeTxt:'You reached the park gate! 🌳🌸', dogCount:4,
+    completeTxt:'You reached the park gate! 🌳🌸', catCount:4,
     collectEmojis:['🍎','🐟','🌸','🎾','🍂'],
     secretEmojis:['🦋','🍄','🪺'],
     doorStyle:'park',
@@ -1243,7 +2827,7 @@ const LEVEL_DEFS = [
   { name:'The Big Building', icon:'🏢', theme:'building', rows:40,
     floorTile:{fill:'#cfd8dc', alt:'#b0bec5', line:'#90a4ae'},
     wallFill:'#607d8b', elevFill:'#eceff1', elevStroke:'#78909c',
-    completeTxt:'Rooftop reached! 🏢✨', dogCount:5,
+    completeTxt:'Rooftop reached! 🏢✨', catCount:5,
     collectEmojis:['🍱','🥫','⭐','🔮','💎'],
     secretEmojis:['📀','🎁','🔮'],
     doorStyle:'building',
@@ -1251,7 +2835,7 @@ const LEVEL_DEFS = [
   { name:'Train Station', icon:'🚉', theme:'station', rows:44,
     floorTile:{fill:'#d1c4e9', alt:'#b39ddb', line:'#9575cd'},
     wallFill:'#5e35b1', elevFill:'#ede7f6', elevStroke:'#9575cd',
-    completeTxt:'All aboard! 🚉🎊', dogCount:5,
+    completeTxt:'All aboard! 🚉🎊', catCount:5,
     collectEmojis:['🍙','🍜','🎫','🧸','🚄'],
     secretEmojis:['🎟️','📿','🗝️'],
     doorStyle:'station',
@@ -1406,28 +2990,17 @@ const HUMAN_OUTFITS = {
 const HUMAN_GIFTS = ['treat','treat','pet','pet','treat','pet']; // shuffled each level
 
 // Treat types: bone, meat, drumstick, cookie
-const TREATS = {
-  bone:     {emoji:'🦴', label:'Bone'},
-  meat:     {emoji:'🥩', label:'Meat'},
-  drumstick:{emoji:'🍖', label:'Drumstick'},
-  cookie:   {emoji:'🐾', label:'Paw Cookie'},
-};
 // Dog treat preferences and required counts
-const DOG_PREFS = {
-  mutt:     {fav:'bone',      needs:1, accepts:'any'},
-  terrier:  {fav:'bone',      needs:1, accepts:'any'},
-  dachshund:{fav:'meat',      needs:2, accepts:'bone'},
-  bulldog:  {fav:'drumstick', needs:3, accepts:'meat'},
-  greyhound:{fav:'bone',      needs:2, accepts:'cookie'},
-};
-
-const DOG_BREEDS = {
-  mutt:     {baseSpeed:0.62,chaseRange:110,scale:1.0, bodyColor:'#d7a87a',strokeColor:'#8d6e63'},
-  terrier:  {baseSpeed:0.85,chaseRange:130,scale:0.85,bodyColor:'#f5f0e8',strokeColor:'#9e9e9e'},
-  dachshund:{baseSpeed:0.68,chaseRange:100,scale:0.85,bodyColor:'#bf8040',strokeColor:'#6d3a00'},
-  bulldog:  {baseSpeed:0.42,chaseRange:80, scale:1.35,bodyColor:'#a1887f',strokeColor:'#5d4037'},
-  greyhound:{baseSpeed:1.05,chaseRange:150,scale:0.9, bodyColor:'#b0bec5',strokeColor:'#607d8b'},
-};
+// Friendly roaming cats — different colours, patterns, personalities
+const FRIEND_CAT_TYPES = [
+  {name:'Sora',    colorIdx:2, pattern:'tabby',  eyeIdx:0, speed:0.55, sound:'purr'},
+  {name:'Mikan',   colorIdx:1, pattern:'tabby',  eyeIdx:2, speed:0.7,  sound:'chirp'},
+  {name:'Kuro',    colorIdx:3, pattern:'solid',  eyeIdx:1, speed:0.45, sound:'purr'},
+  {name:'Shiro',   colorIdx:0, pattern:'tuxedo', eyeIdx:2, speed:0.6,  sound:'mew'},
+  {name:'Hana',    colorIdx:6, pattern:'calico', eyeIdx:4, speed:0.5,  sound:'trill'},
+  {name:'Kinako',  colorIdx:4, pattern:'spots',  eyeIdx:2, speed:0.65, sound:'chirp'},
+  {name:'Mugi',    colorIdx:5, pattern:'tabby',  eyeIdx:0, speed:0.5,  sound:'purr'},
+];
 
 // ═══════════════════════════════════════════════════════════════
 // BEGIN LEVEL
@@ -1460,7 +3033,6 @@ function spawnSecrets(def, floorCells, usedC, R, rng) {
       collected: false,
       revealed: false,
       bob: rng()*Math.PI*2,
-      pts: 100,
     });
   }
   return secrets;
@@ -1502,6 +3074,9 @@ function spawnHumans(def, floorCells, R, rng) {
 }
 
 function beginLevel(idx) {
+  if (idx === 4) { soccerState=null; if(soccerRaf){cancelAnimationFrame(soccerRaf);soccerRaf=null;} if(raf){cancelAnimationFrame(raf);raf=null;} beginSoccer(); return; }
+  // Stop any soccer loop
+  if(soccerRaf){cancelAnimationFrame(soccerRaf);soccerRaf=null;} soccerState=null;
   stopPreviewAnim();
   currentLevel = idx;
   const def = LEVEL_DEFS[idx];
@@ -1533,55 +3108,48 @@ function beginLevel(idx) {
     usedC.add(`${cell.r},${cell.c}`);
     const roll = rng();
     let type,emoji,pts,en;
-    if (roll < 0.3)       { type='food';  emoji=def.collectEmojis[0]; pts=8;  en=22; }
-    else if (roll < 0.48) { type='food';  emoji=def.collectEmojis[1]||'🐟'; pts=6; en=18; }
-    else if (roll < 0.62) { type='toy';   emoji=def.collectEmojis[2]||'🧶'; pts=12; en=0; }
-    else if (roll < 0.74) { type='toy';   emoji=def.collectEmojis[3]||'🎾'; pts=15; en=0; }
-    else if (roll < 0.82) { type='mouse'; emoji='🐭'; pts=50; en=10; }
-    else if (roll < 0.86) { type='goldenmouse'; emoji='🐭'; pts=200; en=0; }
-    else if (roll < 0.93) {
-      type='treat'; pts=0; en=0;
-    }
-    else                  { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=3; en=0; }
+    if (roll < 0.3)       { type='food';  emoji=def.collectEmojis[0]; pts=0; en=22; }
+    else if (roll < 0.48) { type='food';  emoji=def.collectEmojis[1]||'🐟'; pts=0; en=18; }
+    else if (roll < 0.62) { type='toy';   emoji=def.collectEmojis[2]||'🧶'; pts=0; en=0; }
+    else if (roll < 0.74) { type='toy';   emoji=def.collectEmojis[3]||'🎾'; pts=0; en=0; }
+    else if (roll < 0.82) { type='mouse'; emoji='🐭'; pts=0; en=10; }
+    else if (roll < 0.86) { type='goldenmouse'; emoji='🐭'; pts=0; en=0; }
+    else if (roll < 0.93) { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=0; en=0; }
+    else                  { type='flower'; emoji=['🌸','🌼','💐'][Math.floor(rng()*3)]; pts=0; en=0; }
     const isMouse = type==='mouse'||type==='goldenmouse';
     const spd = isMouse ? (type==='goldenmouse' ? 1.1:0.7) : 0;
-    // Determine treat subtype before push
-    let treatType = null;
-    if (type==='treat') {
-      const tts=['bone','meat','drumstick','cookie'];
-      treatType = tts[Math.floor(rng()*tts.length)];
-      emoji = TREATS[treatType].emoji;
-    }
     collectibles.push({
       type,emoji,pts,en:0,collected:false,
       wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
       moveSpeed:spd, moveDir:rng()>0.5?1:-1,
       moveMin:(cell.c-1)*TILE+TILE/2, moveMax:(cell.c+1)*TILE+TILE/2,
       bob:rng()*Math.PI*2, golden:type==='goldenmouse',
-      treatType,
     });
   }
 
-  // Dogs
-  const dogs = [];
-  const dogZone = floorCells.filter(p => p.r > 4 && p.r < R-4);
-  const dc = DIFF[difficulty];
-  for (let i = 0; i < def.dogCount; i++) {
+  // Friendly roaming cats
+  const dogs = []; // kept as 'dogs' var name for minimal refactor, they're cats now
+  const catCount = Math.round((def.catCount||3) * (CAT_COUNT_MULT||1));
+  const catZone = floorCells.filter(p => p.r > 4 && p.r < R-4);
+  for (let i = 0; i < catCount; i++) {
     let cell;
     for (let a = 0; a < 30; a++) {
-      cell = dogZone[Math.floor(rng() * dogZone.length)];
-      if (cell && cell.r*TILE < R*TILE - TILE*5) break;
+      cell = catZone[Math.floor(rng() * catZone.length)];
+      if (cell && !usedC.has(`${cell.r},${cell.c}`)) break;
     }
     if (!cell) continue;
-    const breeds = ['mutt','terrier','dachshund','bulldog','greyhound'];
-    const breed = breeds[Math.floor(rng() * breeds.length)];
-    const bi = DOG_BREEDS[breed];
+    usedC.add(`${cell.r},${cell.c}`);
+    const type = FRIEND_CAT_TYPES[Math.floor(rng() * FRIEND_CAT_TYPES.length)];
     dogs.push({
-      breed, ...bi,
-      wx:cell.c*TILE+TILE/2, wy:cell.r*TILE+TILE/2,
-      state:'wander', wanderTimer:60+Math.floor(rng()*100), wanderAngle:rng()*Math.PI*2,
-      treatProgress:0, treatCooldown:0, stunTick:0, fleeTick:0, happyTick:0,
-      speed:bi.baseSpeed * dc.dogSpeed * (0.85+rng()*0.3),
+      ...type,
+      wx: cell.c*TILE+TILE/2, wy: cell.r*TILE+TILE/2,
+      state: 'wander',
+      wanderTimer: 80+Math.floor(rng()*140),
+      wanderAngle: rng()*Math.PI*2,
+      facingAngle: 0,
+      touchCooldown: 0,
+      heartAnim: 0,
+      bob: rng()*Math.PI*2,
     });
   }
 
@@ -1592,11 +3160,20 @@ function beginLevel(idx) {
 
   // ── Secret collectibles (3 per level, hidden) ──
   const secrets = spawnSecrets(def, floorCells, usedC, R, rng);
+  const napSpots = spawnNapSpots(idx, floorCells, usedC, rng);
+  const stickers = spawnLevelStickers(idx, floorCells, usedC, rng);
+  const wateringCan = spawnWaterFeature(idx, floorCells, interactables, usedC, rng);
+  const hiddenRoom = spawnHiddenRoom(idx, grid, R, floorCells, usedC, rng);
+  // Fish tank — add as a fixed interactable near the start
+  const ftZone = floorCells.filter(p => p.r > 2 && p.r < 8);
+  const ftCell = ftZone[Math.floor(rng()*ftZone.length)] || floorCells[0];
+  const fishTank = { wx: ftCell.c*TILE+TILE/2, wy: ftCell.r*TILE+TILE/2 };
+  initWeather(idx);
+  fishTapAnim = 0;
 
   gs = {
-    running:true, time:0, score:0,
+    running:true, time:0,
     hasKey:false, doorShake:0,
-    treats:{bone:0, meat:0, drumstick:0, cookie:0}, maxTreats:8,
     camY:0, grid, R, def,
     cat:{
       wx:CW/2, wy:R*TILE - TILE*1.5,
@@ -1609,6 +3186,8 @@ function beginLevel(idx) {
     key:{wx:keyCell.c*TILE+TILE/2, wy:keyCell.r*TILE+TILE/2, collected:false},
     door:{wx:(4.5)*TILE + TILE/2, wy:TILE*1.4},
     collectibles, dogs, interactables, secrets, humans,
+    napSpots, stickers, hiddenRoom, fishTank,
+    hasWateringCan: false, wateringCanItem: wateringCan,
     particles:[],
     joystick:{active:false,dx:0,dy:0},
     scratchPressed:false,
@@ -1617,9 +3196,19 @@ function beginLevel(idx) {
   document.getElementById('hud').style.display = 'block';
   document.getElementById('game-canvas-wrap').style.display = 'block';
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-  updateDiffBadge();
   if (raf) cancelAnimationFrame(raf);
   if (musicEnabled) startMusic();
+  // Push watering can into collectibles list
+  if (wateringCan) gs.collectibles.push(wateringCan);
+  // Register hidden room trigger as a scratchable interactable
+  if (hiddenRoom) {
+    gs.interactables.push({
+      type:'hiddenroom', emoji:hiddenRoom.emoji, wx:hiddenRoom.wx, wy:hiddenRoom.wy,
+      active:true, broken:false, animTick:0, activated:false,
+      _room: hiddenRoom,
+    });
+  }
+  loadJournal();
   gameLoop();
 }
 
@@ -1637,13 +3226,72 @@ const SWIPE_MIN_DIST = 40;
 const SWIPE_MAX_MS = 220;
 
 const canvas = document.getElementById('gameCanvas');
+// Scroll handling for help menu
+canvas.addEventListener('wheel', e => {
+  if (!helpOpen) return;
+  e.preventDefault();
+  const max = drawHelp._maxScroll || 0;
+  helpScroll = Math.max(0, Math.min(max, helpScroll + e.deltaY * 0.4));
+}, { passive: false });
+
+// Touch scroll for help menu
+let helpTouchY = null;
+canvas.addEventListener('touchstart', e => {
+  if (!helpOpen) return;
+  helpTouchY = e.touches[0].clientY;
+}, { passive: true });
+canvas.addEventListener('touchmove', e => {
+  if (!helpOpen || helpTouchY === null) return;
+  const dy = helpTouchY - e.touches[0].clientY;
+  helpTouchY = e.touches[0].clientY;
+  const max = drawHelp._maxScroll || 0;
+  helpScroll = Math.max(0, Math.min(max, helpScroll + dy * 1.2));
+}, { passive: true });
+canvas.addEventListener('touchend', () => { helpTouchY = null; });
+// Soccer kickoff button click
+canvas.addEventListener('click', e => {
+  if (soccerState && !soccerState.running && !soccerState.winner) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = CW/rect.width, scaleY = CH/rect.height;
+    const mx = (e.clientX-rect.left)*scaleX;
+    const my = (e.clientY-rect.top)*scaleY;
+    const bx = renderSoccer._kickBtnX||0, bw = renderSoccer._kickBtnW||140;
+    const by = renderSoccer._kickBtnY||0, bh = renderSoccer._kickBtnH||36;
+    if (mx>=bx && mx<=bx+bw && my>=by && my<=by+bh) {
+      kickOff(); return;
+    }
+  }
+});
+
+// Click anywhere on help overlay to close
+canvas.addEventListener('click', e => {
+  if (!helpOpen) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = CW / rect.width, scaleY = CH / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  const pw = 310, ph = 410;
+  const px = (CW-pw)/2, py = (CH-ph)/2;
+  // Click X button or outside panel closes it
+  const onX = mx > px+pw-30 && mx < px+pw-4 && my > py+10 && my < py+42;
+  const outside = mx < px || mx > px+pw || my < py || my > py+ph;
+  if (onX || outside) helpOpen = false;
+});
+
 const ctx = canvas.getContext('2d');
 const keys = {};
 
 window.addEventListener('keydown', e => {
   const wasDown = keys[e.code];
   keys[e.code] = true;
-  if ((e.code==='KeyX'||e.code==='KeyZ') && gs?.running) { doScratch(); }
+  if ((e.code==='KeyX'||e.code==='KeyZ') && gs?.running) {
+    doScratch();
+    if (gs.hasWateringCan) tryWaterPlant(gs.cat);
+  }
+  if (e.code==='KeyP') takePhoto();
+  if (e.code==='KeyJ') toggleJournal();
+  if (e.code==='KeyH') toggleHelp();
+  if ((e.code==='Space'||e.code==='Enter') && soccerState && !soccerState.running && !soccerState.winner) kickOff();
   if (e.code==='Space') e.preventDefault();
   // Double-tap dash detection
   if (!wasDown && gs?.running) {
@@ -1679,10 +3327,12 @@ jZone.addEventListener('touchmove', e => {
 }, {passive:false});
 ['touchend','touchcancel'].forEach(ev => jZone.addEventListener(ev, e => {
   for (const t of e.changedTouches) if (jTouch && t.identifier===jTouch.id) {
-    jTouch = null; if (gs) gs.joystick = {active:false,dx:0,dy:0};
+    jTouch = null;
+    if (gs) gs.joystick = {active:false,dx:0,dy:0};
+    if (soccerState) soccerState.joystick = {active:false,dx:0,dy:0};
     jKnob.style.transform = 'translate(-50%,-50%)';
     // Swipe-to-dash detection
-    if (swipeStart && gs?.running) {
+    if (swipeStart && (gs?.running || soccerState?.running)) {
       const elapsed = Date.now() - swipeStart.time;
       const sdx = t.clientX - swipeStart.x, sdy = t.clientY - swipeStart.y;
       const sdist = Math.hypot(sdx, sdy);
@@ -1699,11 +3349,29 @@ function updateJoystick(cx, cy) {
   const d = Math.hypot(dx,dy); if (d>JR) {dx=dx/d*JR; dy=dy/d*JR;}
   jKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
   if (gs) gs.joystick = {active:true, dx:dx/JR, dy:dy/JR};
+  if (soccerState) soccerState.joystick = {active:true, dx:dx/JR, dy:dy/JR};
 }
-function onScratchDown(e) { e.preventDefault(); if (gs?.running) doScratch(); document.getElementById('scratch-btn').classList.add('pressed'); }
+function onScratchDown(e) { e.preventDefault(); if (soccerState && !soccerState.running && !soccerState.winner) { kickOff(); } else if (gs?.running) doScratch(); document.getElementById('scratch-btn').classList.add('pressed'); }
 function onScratchUp(e)   { e.preventDefault(); document.getElementById('scratch-btn').classList.remove('pressed'); }
 
 function triggerDash(keyCode, nx, ny) {
+  // Soccer mode dash
+  if (soccerState?.running) {
+    const p = soccerState.player;
+    if (p.dashFrames > 0 || p.dashCooldown > 0) return;
+    let dx = nx||0, dy = ny||0;
+    if (keyCode) {
+      if (keyCode==='ArrowLeft'||keyCode==='KeyA')  { dx=-1; dy=0; }
+      if (keyCode==='ArrowRight'||keyCode==='KeyD') { dx=1;  dy=0; }
+      if (keyCode==='ArrowUp'||keyCode==='KeyW')    { dx=0;  dy=-1; }
+      if (keyCode==='ArrowDown'||keyCode==='KeyS')  { dx=0;  dy=1; }
+    }
+    const dl = Math.hypot(dx,dy)||1; dx/=dl; dy/=dl;
+    p.dashDx=dx; p.dashDy=dy; p.dashFrames=14; p.dashCooldown=90;
+    p.justDashed=true;
+    playDash();
+    return;
+  }
   if (!gs || gs.cat.dashFrames > 0 || gs.cat.dashCooldown > 0) return;
   let dx = nx||0, dy = ny||0;
   if (keyCode) {
@@ -1733,88 +3401,29 @@ function doScratch() {
   if (!gs || gs.cat.scratchCooldown > 0) return;
   gs.cat.scratchCooldown = SCRATCH_COOLDOWN;
   gs.cat.scratchActive = true;
-  gs.energy = Math.max(0, gs.energy - DIFF[difficulty].scratchCost);
+  gs.energy = Math.max(0, gs.energy - 1);
   playMeow();
   checkScratchHits();
 }
 
-function offerTreat(dog) {
-  const pref = DOG_PREFS[dog.breed] || DOG_PREFS.mutt;
-  const dc = DIFF[difficulty];
-
-  // Find best available treat for this dog
-  let treatToUse = null;
-  const totalTreats = Object.values(gs.treats).reduce((a,b)=>a+b,0);
-  if (totalTreats === 0) {
-    spawnPop(dog.wx, dog.wy, 'No treats! 😿', '#ef9a9a');
-    return;
-  }
-  // Prefer favourite, then accepted, then any (on easy)
-  if (gs.treats[pref.fav] > 0) {
-    treatToUse = pref.fav;
-  } else if (pref.accepts !== 'any' && gs.treats[pref.accepts] > 0) {
-    treatToUse = pref.accepts;
-  } else if (dc.treatBonus >= 1) {
-    // Easy mode: any treat works
-    treatToUse = Object.keys(gs.treats).find(t => gs.treats[t] > 0);
-  }
-
-  if (!treatToUse) {
-    const wantEmoji = TREATS[pref.fav].emoji;
-    spawnPop(dog.wx, dog.wy, `Wants ${wantEmoji}!`, '#ffb74d');
-    playWoof();
-    return;
-  }
-
-  // Consume treat
-  gs.treats[treatToUse]--;
-
-  // Is this the preferred treat?
-  const isPreferred = treatToUse === pref.fav;
-  // How many treats needed (difficulty affects this)
-  const baseNeeds = pref.needs + (isPreferred ? 0 : 1) - dc.treatBonus;
-  const needed = Math.max(1, baseNeeds);
-
-  dog.treatProgress = (dog.treatProgress || 0) + 1;
-  dog.treatCooldown = 60;
-
-  const treatEmoji = TREATS[treatToUse].emoji;
-  const remaining = needed - dog.treatProgress;
-
-  playCollect();
-  if (dog.treatProgress >= needed) {
-    // Dog is befriended!
-    dog.state = 'happy';
-    dog.happyTick = 0;
-    const pts = dog.breed==='bulldog'?80: dog.breed==='greyhound'||dog.breed==='dachshund'?50:30;
-    gs.score += pts;
-    spawnPop(dog.wx, dog.wy, `🐾 Friends! +${pts}`, '#f48fb1');
-    spawnParticles(dog.wx, dog.wy, '💕');
-    spawnParticles(dog.wx, dog.wy, treatEmoji);
-    playDoorOpen(); // happy jingle
-  } else {
-    const hearts = ['','❤️','❤️❤️','❤️❤️❤️'][Math.min(dog.treatProgress,3)];
-    spawnPop(dog.wx, dog.wy, `${treatEmoji}${hearts} ${remaining} more!`, '#ce93d8');
-    playHit();
-  }
-}
 
 function checkScratchHits() {
   const cat = gs.cat;
   const fa = cat.facingAngle - Math.PI/2; // actual world direction
 
-  // Offer treat to nearby dog
-  for (const dog of gs.dogs) {
-    if (dog.state==='gone'||dog.state==='happy') continue;
-    const dx=dog.wx-cat.wx, dy=dog.wy-cat.wy;
-    const dist = Math.hypot(dx,dy);
-    if (dist > SCRATCH_RANGE) continue;
-    const angle = Math.atan2(dy,dx);
-    const diff = Math.abs(normaliseAngle(angle - fa));
-    if (diff > SCRATCH_ARC/2) continue;
-    if (dog.treatCooldown > 0) continue;
-    offerTreat(dog);
-    break; // one dog per scratch
+  // Friendly cats react to nearby scratch (gentle)
+  for (const fc of gs.dogs) {
+    const dx=fc.wx-cat.wx, dy=fc.wy-cat.wy;
+    const dist=Math.hypot(dx,dy);
+    if (dist>SCRATCH_RANGE) continue;
+    if (fc.touchCooldown>0) continue;
+    const angle=Math.atan2(dy,dx);
+    const diff=Math.abs(normaliseAngle(angle-fa));
+    if (diff>SCRATCH_ARC/2) continue;
+    fc.touchCooldown=60; fc.heartAnim=55;
+    playFriendCatSound(fc.sound);
+    spawnParticles(fc.wx, fc.wy-10, '💕');
+    break;
   }
 
 
@@ -1838,17 +3447,28 @@ function normaliseAngle(a) {
 }
 
 function activateInteractable(obj) {
+  if (obj.type === 'hiddenroom') {
+    if (!obj.activated) {
+      obj.activated = true;
+      obj._room.open = true; obj._room.openAnim = 0; obj._room.activated = true;
+      spawnParticles(obj.wx, obj.wy, '✨');
+      spawnParticles(obj.wx, obj.wy, '🌟');
+      spawnPop(obj.wx, obj.wy, 'Secret room! 🌟', '#ce93d8');
+      playDoorOpen();
+    }
+    return;
+  }
+  if (obj.type === 'plant' && obj.wilted) { tryWaterPlant(gs.cat); return; }
+
   obj.animTick = 20;
   if (obj.type==='box'||obj.type==='luggage') {
     obj.active = false; obj.broken = true;
-    gs.score += obj.pts||8;
-    spawnPop(obj.wx, obj.wy, `💥 +${obj.pts||8}!`, '#f48fb1');
+    spawnPop(obj.wx, obj.wy, '💥 Smash!', '#f48fb1');
     spawnParticles(obj.wx, obj.wy, obj.brokenEmoji||'✨');
     playBreak();
   } else if (obj.type==='plant') {
     obj.active = false; obj.broken = true;
-    gs.score += obj.pts||4;
-    spawnPop(obj.wx, obj.wy, `🌿 +${obj.pts}!`, '#a5d6a7');
+    spawnPop(obj.wx, obj.wy, '🌿 Whoosh!', '#a5d6a7');
     spawnParticles(obj.wx, obj.wy, '🌸');
     playBreak();
   } else if (obj.type==='feeder') {
@@ -1898,7 +3518,7 @@ function gameLoop() {
 
 function update() {
   const cat = gs.cat;
-  const d = DIFF[difficulty];
+  const d = {catCount:1};
   const t = gs.time;
 
   // Movement
@@ -1970,9 +3590,9 @@ function update() {
   // Key pickup
   if (!gs.key.collected) {
     if (Math.hypot(cat.wx-gs.key.wx, cat.wy-gs.key.wy) < 24) {
-      gs.key.collected=true; gs.hasKey=true; gs.score+=50;
+      gs.key.collected=true; gs.hasKey=true;
       playKeyPickup();
-      spawnPop(gs.key.wx, gs.key.wy, '🗝️ +50!', '#ffd700');
+      spawnPop(gs.key.wx, gs.key.wy, '🗝️ Found the key!', '#ffd700');
       spawnParticles(gs.key.wx, gs.key.wy, '✨');
       document.getElementById('key-indicator').textContent='🗝️ ✓';
     }
@@ -2033,20 +3653,14 @@ function update() {
     }
     if (Math.hypot(cat.wx-c.wx, cat.wy-c.wy)<20) {
       c.collected=true;
-      if (c.type==='treat' && c.treatType) {
-        const total = Object.values(gs.treats).reduce((a,b)=>a+b,0);
-        if (total < gs.maxTreats) {
-          gs.treats[c.treatType] = (gs.treats[c.treatType]||0)+1;
-          playCollect();
-          spawnPop(c.wx, c.wy, `${TREATS[c.treatType].emoji} Got treat!`, '#f48fb1');
-          spawnParticles(c.wx, c.wy, TREATS[c.treatType].emoji);
-        } else {
-          spawnPop(c.wx, c.wy, 'Bag full! 🎒', '#bdbdbd');
-        }
-      } else {
-        gs.score+=c.pts;
+      if (c.type === 'wateringcan') {
+        gs.hasWateringCan = true;
         playCollect();
-        spawnPop(c.wx, c.wy, c.golden?`✨+${c.pts}!`:`+${c.pts}⭐`, c.golden?'#ffd700':'#ce93d8');
+        spawnPop(c.wx, c.wy, '🪣 Watering can!', '#80cbc4');
+        spawnParticles(c.wx, c.wy, '💧');
+      } else {
+        playCollect();
+        spawnPop(c.wx, c.wy, c.golden?'✨ Shiny!':'Yay!', c.golden?'#ffd700':'#ce93d8');
         spawnParticles(c.wx, c.wy, c.golden?'✨':'🌸');
       }
     }
@@ -2054,6 +3668,10 @@ function update() {
 
   updateDogs();
   updateSecrets();
+  updateStickerPickup();
+  updateNapSpots();
+  checkFishTank();
+  updateWeather();
   updateHumans();
   updateHUD();
 }
@@ -2076,16 +3694,10 @@ function updateHumans() {
       h.moving = false;
 
       if (h.gift === 'treat') {
-        const total = Object.values(gs.treats).reduce((a,b)=>a+b,0);
-        if (total < gs.maxTreats) {
-          gs.treats[h.treatType] = (gs.treats[h.treatType]||0) + 1;
           playCollect();
-          spawnPop(h.wx, h.wy, `${TREATS[h.treatType].emoji} Here you go!`, '#f48fb1');
-          spawnParticles(h.wx, h.wy, TREATS[h.treatType].emoji);
+          spawnPop(h.wx, h.wy, '🐟 Snack!', '#f48fb1');
+          spawnParticles(h.wx, h.wy, '🐟');
           spawnParticles(h.wx, h.wy, '💕');
-        } else {
-          spawnPop(h.wx, h.wy, 'Bag full! 😅', '#bdbdbd');
-        }
       } else {
         // Pet — give happiness boost
         cat.happyFrames = HAPPY_DURATION;
@@ -2132,9 +3744,8 @@ function updateSecrets() {
     if (dist < 30) s.revealed = true;
     if (dist < 20 && s.revealed) {
       s.collected = true;
-      gs.score += s.pts;
       playKeyPickup(); // nice chime for secret find
-      spawnPop(s.wx, s.wy, `🔍 SECRET! +${s.pts}`, '#ffd700');
+      spawnPop(s.wx, s.wy, '🔍 Secret found! ✨', '#ffd700');
       spawnParticles(s.wx, s.wy, '✨');
       spawnParticles(s.wx, s.wy, s.emoji);
     }
@@ -2194,46 +3805,47 @@ function resolveCollisions(cat) {
   cat.wy = Math.max(TILE+R2, Math.min((gs.R-1)*TILE-R2, cat.wy));
 }
 
-function updateDogs() {
-  const cat = gs.cat; const dc = DIFF[difficulty];
-  for (const dog of gs.dogs) {
-    if (dog.state==='gone') continue;
-    if (dog.stunTick>0) { dog.stunTick--; continue; }
-    if (dog.treatCooldown>0) dog.treatCooldown--;
-    if (dog.state==='fleeing') {
-      const fx=dog.wx-cat.wx, fy=dog.wy-cat.wy, fl=Math.hypot(fx,fy)||1;
-      dog.wx+=fx/fl*dog.speed*2.0; dog.wy+=fy/fl*dog.speed*2.0;
-      dog.fleeTick++;
-      if (dog.fleeTick>140||dog.wx<TILE||dog.wx>(COLS-1)*TILE||dog.wy<TILE||dog.wy>(gs.R-1)*TILE) dog.state='gone';
-      continue;
+function updateDogs() { // friendly cats
+  const cat = gs.cat;
+  for (const fc of gs.dogs) {
+    if (fc.heartAnim > 0) fc.heartAnim--;
+    if (fc.touchCooldown > 0) fc.touchCooldown--;
+
+    // Wander gently
+    fc.wanderTimer--;
+    if (fc.wanderTimer <= 0) {
+      fc.wanderAngle += (Math.random()-0.5)*1.1;
+      fc.wanderTimer = 90 + Math.floor(Math.random()*160);
     }
-    if (dog.state==='happy') continue; // sits still once befriended
-    const dist = Math.hypot(cat.wx-dog.wx, cat.wy-dog.wy);
-    if (dist < dog.chaseRange*(dc.dogSpeed>1?1.2:1)) {
-      const dx=cat.wx-dog.wx, dy=cat.wy-dog.wy, dl=Math.hypot(dx,dy)||1;
-      dog.wx+=dx/dl*dog.speed*0.45; dog.wy+=dy/dl*dog.speed*0.45;
-    } else {
-      dog.wanderTimer--;
-      if (dog.wanderTimer<=0) { dog.wanderAngle+=(Math.random()-0.5)*Math.PI; dog.wanderTimer=90+Math.floor(Math.random()*120); }
-      dog.wx+=Math.cos(dog.wanderAngle)*dog.speed*0.28;
-      dog.wy+=Math.sin(dog.wanderAngle)*dog.speed*0.28;
+    const nx = Math.cos(fc.wanderAngle)*fc.speed*0.32;
+    const ny = Math.sin(fc.wanderAngle)*fc.speed*0.32;
+    fc.wx += nx; fc.wy += ny;
+    if (Math.abs(nx)+Math.abs(ny)>0.05) fc.facingAngle = Math.atan2(ny,nx)+Math.PI/2;
+
+    // Clamp + wall bounce
+    fc.wx = Math.max(TILE*1.5, Math.min((COLS-1)*TILE-TILE*1.5, fc.wx));
+    fc.wy = Math.max(TILE*1.5, Math.min((gs.R-1)*TILE-TILE*1.5, fc.wy));
+    const fgr=Math.floor(fc.wy/TILE), fgc=Math.floor(fc.wx/TILE);
+    if (fgr>=0&&fgr<gs.R&&fgc>=0&&fgc<COLS &&
+        (gs.grid[fgr][fgc]===1||gs.grid[fgr][fgc]===2||gs.grid[fgr][fgc]===3)) {
+      fc.wx -= nx; fc.wy -= ny;
+      fc.wanderAngle += Math.PI*(0.5+Math.random()*0.5);
     }
-    dog.wx=Math.max(TILE+10,Math.min((COLS-1)*TILE-10,dog.wx));
-    dog.wy=Math.max(TILE+10,Math.min((gs.R-1)*TILE-10,dog.wy));
-    // Gentle nudge on contact (no damage)
-    if (dist < 28) {
-      const nx=(cat.wx-dog.wx)/(dist||1), ny=(cat.wy-dog.wy)/(dist||1);
-      cat.wx += nx*1.2; cat.wy += ny*1.2;
+
+    // Touch detection — play sound + show heart
+    const dist = Math.hypot(cat.wx-fc.wx, cat.wy-fc.wy);
+    if (dist < 28 && fc.touchCooldown === 0) {
+      fc.touchCooldown = 90;
+      fc.heartAnim = 55;
+      playFriendCatSound(fc.sound);
+      spawnParticles(fc.wx, fc.wy-10, '💕');
+    }
+    // Soft nudge so cats don't overlap player
+    if (dist < 26) {
+      const ex=(cat.wx-fc.wx)/(dist||1), ey=(cat.wy-fc.wy)/(dist||1);
+      cat.wx += ex*1.0; cat.wy += ey*1.0;
     }
   }
-  // Tick happy dogs away after celebration
-  for (const dog of gs.dogs) {
-    if (dog.state==='happy') {
-      dog.happyTick = (dog.happyTick||0)+1;
-      if (dog.happyTick>180) dog.state='gone';
-    }
-  }
-  gs.dogs = gs.dogs.filter(d=>d.state!=='gone');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2279,6 +3891,15 @@ function render() {
 
   // Secrets (hidden until near)
   if (gs.secrets) for (const s of gs.secrets) if (!s.collected) drawSecret(s, gs.time, gs.cat);
+
+  // Nap spots (under cat)
+  if (gs.napSpots) drawNapSpots(gs.time);
+  // Fish tank
+  drawFishTank(gs.time);
+  // Hidden room
+  drawHiddenRoom(gs.time);
+  // Sticker items
+  drawStickerItems(gs.time);
 
   // Dash trail (behind cat)
   drawDashTrail();
@@ -2496,40 +4117,93 @@ function drawCollectible(c,t) {
   ctx.restore();
 }
 
-function drawDogTopDown(dog,t,cat) {
-  const col=dog.bodyColor, stroke=dog.strokeColor, s=dog.scale||1;
-  const dx=cat.wx-dog.wx, dy=cat.wy-dog.wy;
-  const angle=Math.atan2(dy,dx)+Math.PI/2;
-  const dist=Math.hypot(dx,dy);
-  const fleeing=dog.state==='fleeing';
-  const stunned=dog.stunTick>0;
-  const legS=Math.sin(t*0.22)*9*(fleeing?1.8:1);
-  ctx.save(); ctx.translate(dog.wx,dog.wy); ctx.rotate(angle); ctx.scale(s,s);
-  if (stunned&&Math.floor(t/4)%2===0) ctx.globalAlpha=0.4;
-  ctx.fillStyle='rgba(0,0,0,0.07)'; ctx.beginPath(); ctx.ellipse(0,2,16,7,0,0,Math.PI*2); ctx.fill();
-  const tw=Math.sin(t*0.18)*20;
-  ctx.strokeStyle=col; ctx.lineWidth=5; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(0,12); ctx.quadraticCurveTo(12+tw,22,7+tw,30); ctx.stroke();
-  ctx.fillStyle=col; ctx.strokeStyle=stroke; ctx.lineWidth=2;
-  if (dog.breed==='bulldog') { ctx.beginPath(); ctx.ellipse(0,2,16,12,0,0,Math.PI*2); ctx.fill(); ctx.stroke(); }
-  else if (dog.breed==='dachshund') { ctx.beginPath(); ctx.ellipse(0,2,9,18,0,0,Math.PI*2); ctx.fill(); ctx.stroke(); }
-  else { ctx.beginPath(); ctx.ellipse(0,2,13,13,0,0,Math.PI*2); ctx.fill(); ctx.stroke(); }
-  ctx.strokeStyle=stroke; ctx.lineWidth=5; ctx.lineCap='round';
-  const ld=dog.breed==='bulldog'?14:10;
-  [[-ld,-4+legS],[ld,-4-legS],[-ld,8-legS],[ld,8+legS]].forEach(([lx,ly])=>{ctx.beginPath();ctx.moveTo(lx*0.6,ly*0.5);ctx.lineTo(lx,ly);ctx.stroke();});
-  ctx.fillStyle=col; ctx.strokeStyle=stroke; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.arc(0,-13,dog.breed==='bulldog'?11:8,0,Math.PI*2); ctx.fill(); ctx.stroke();
-  ctx.fillStyle=stroke;
-  if (dog.breed==='terrier') [[-6,-19],[6,-19]].forEach(([ex,ey])=>{ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-3,ey-7);ctx.lineTo(ex+3,ey-7);ctx.closePath();ctx.fill();});
-  else [[-7,-14],[7,-14]].forEach(([ex,ey])=>{ctx.beginPath();ctx.ellipse(ex,ey,4,6,0,0,Math.PI*2);ctx.fill();});
-  ctx.fillStyle='#4e342e'; [[-4,-14],[4,-14]].forEach(([ex,ey])=>{ctx.beginPath();ctx.arc(ex,ey,2.5,0,Math.PI*2);ctx.fill();});
-  ctx.fillStyle='white'; [[-4,-14],[4,-14]].forEach(([ex,ey])=>{ctx.beginPath();ctx.arc(ex-0.5,ey-0.5,1,0,Math.PI*2);ctx.fill();});
-  ctx.fillStyle='#5d4037'; ctx.beginPath(); ctx.arc(0,-10,2.5,0,Math.PI*2); ctx.fill();
-  if (dist<dog.chaseRange||fleeing) { ctx.fillStyle='#ef9a9a'; ctx.beginPath(); ctx.ellipse(0,-6,3,5,0,0,Math.PI*2); ctx.fill(); }
-  if (!fleeing&&!stunned&&dist<dog.chaseRange) { ctx.globalAlpha=0.9; ctx.font='12px serif'; ctx.textAlign='center'; ctx.fillText('❗',0,-28/s); }
-  if (stunned) { ctx.globalAlpha=0.9; ctx.font='12px serif'; ctx.textAlign='center'; ctx.fillText('💫',Math.sin(t*0.3)*5,-30/s); }
-  if (dog.breed==='bulldog'&&dog.hitsLeft>0&&!fleeing) { ctx.globalAlpha=0.9; ctx.font='10px serif'; for(let h=0;h<dog.hitsLeft;h++) ctx.fillText('❤️',-5+h*12,-34/s); }
+function playFriendCatSound(soundType) {
+  try {
+    const ac = getAudio(), t = ac.currentTime;
+    if (soundType === 'purr') {
+      // Gentle purr — low rumbling sine
+      const o = ac.createOscillator(), g = ac.createGain();
+      const lfo = ac.createOscillator(), lg = ac.createGain();
+      o.type='sine'; o.frequency.value=62;
+      lfo.type='sine'; lfo.frequency.value=26; lg.gain.value=14;
+      lfo.connect(lg); lg.connect(o.frequency);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.18,t+0.08);
+      g.gain.setValueAtTime(0.18,t+0.35); g.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t); o.stop(t+0.6); lfo.start(t); lfo.stop(t+0.6);
+    } else if (soundType === 'mew') {
+      // Short mew — higher pitch meow
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(520,t); o.frequency.exponentialRampToValueAtTime(380,t+0.18);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.16,t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.25);
+    } else if (soundType === 'chirp') {
+      // Chirp trill — rapidly oscillating
+      const o = ac.createOscillator(), g = ac.createGain();
+      const trem = ac.createOscillator(), tg = ac.createGain();
+      o.type='triangle'; o.frequency.value=680;
+      trem.type='sine'; trem.frequency.value=22; tg.gain.value=0.12;
+      trem.connect(tg); tg.connect(g.gain);
+      g.gain.setValueAtTime(0.14,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.28);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t); o.stop(t+0.3); trem.start(t); trem.stop(t+0.3);
+    } else {
+      // trill — two-note warble
+      [0, 0.1].forEach((dt,i) => {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type='sine'; o.frequency.value = i===0?440:520;
+        g.gain.setValueAtTime(0,t+dt); g.gain.linearRampToValueAtTime(0.14,t+dt+0.04);
+        g.gain.exponentialRampToValueAtTime(0.001,t+dt+0.18);
+        o.connect(g); g.connect(ac.destination); o.start(t+dt); o.stop(t+dt+0.2);
+      });
+    }
+  } catch(e){}
+}
+
+function drawDogTopDown(fc, t, cat) {
+  // Draw a friendly roaming cat
+  const cfg = {colorIdx:fc.colorIdx, pattern:fc.pattern, eyeIdx:fc.eyeIdx, accessory:'none'};
+  const bob = Math.sin(t*0.09 + fc.bob)*2;
+  const moving = true; // always animate gently
+
+  ctx.save();
+  ctx.translate(fc.wx, fc.wy + bob);
+  ctx.rotate(fc.facingAngle);
+
+  // Soft shadow
+  ctx.fillStyle='rgba(0,0,0,0.07)';
+  ctx.beginPath(); ctx.ellipse(0,6,12,5,0,0,Math.PI*2); ctx.fill();
+
+  // Reuse the main cat drawing but smaller
+  ctx.scale(0.72, 0.72);
+  drawCatTopDown(ctx, 0, 0, cfg, t + fc.bob*40, 0, true, 0);
   ctx.restore();
+
+  // Name label (shows on nearby approach)
+  const dist = Math.hypot(cat.wx-fc.wx, cat.wy-fc.wy);
+  if (dist < 70) {
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, (70-dist)/30);
+    ctx.font = 'bold 9px Nunito, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillText(fc.name, fc.wx+0.5, fc.wy-22+0.5);
+    ctx.fillStyle = 'white';
+    ctx.fillText(fc.name, fc.wx, fc.wy-22);
+    ctx.restore();
+  }
+
+  // Heart animation when touched
+  if (fc.heartAnim > 0) {
+    const prog = fc.heartAnim/55;
+    ctx.save();
+    ctx.globalAlpha = prog * 0.9;
+    ctx.font = `${10+prog*6}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('💕', fc.wx + Math.sin(fc.heartAnim*0.3)*8, fc.wy - 28 - (55-fc.heartAnim)*0.6);
+    ctx.restore();
+  }
 }
 
 
@@ -2617,7 +4291,7 @@ function drawHuman(h, t) {
     // Hand holding gift
     ctx.fillStyle=o.skin; ctx.beginPath(); ctx.arc(0,12,4,0,Math.PI*2); ctx.fill();
     ctx.font='11px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(h.gift==='treat'?TREATS[h.treatType].emoji:'🤚',0,12);
+    ctx.fillText(h.gift==='treat'?'🐟':'🤚',0,12);
   }
   ctx.restore();
 
@@ -2646,7 +4320,7 @@ function drawHuman(h, t) {
 
   // Gift bubble when nearby but not yet offering
   if (h.offerCooldown === 0 && h.state!=='offering') {
-    const giftEmoji = h.gift==='treat'?TREATS[h.treatType].emoji:'🤗';
+    const giftEmoji = h.gift==='treat'?'🐟':'🤗';
     ctx.save();
     ctx.globalAlpha=0.7+Math.sin(t*0.12)*0.3;
     ctx.font='14px serif'; ctx.textAlign='center';
@@ -2753,14 +4427,11 @@ function spawnPop(wx,wy,text,color) {
 }
 
 function updateHUD() {
-  document.getElementById('score-val').textContent=gs.score;
   document.getElementById('key-indicator').textContent=gs.hasKey?'🗝️ ✓':'🗝️ ✗';
-  // Treat inventory
-  const parts = Object.entries(gs.treats)
-    .filter(([,v])=>v>0)
-    .map(([k,v])=>`${TREATS[k].emoji}×${v}`)
-    .join(' ');
-  document.getElementById('treat-display').textContent = parts || '🎒 Empty';
+  const waterEl = document.getElementById('watering-hud');
+  if (waterEl) waterEl.style.display = gs.hasWateringCan ? '' : 'none';
+  const dtEl = document.getElementById('daytime-hud');
+  if (dtEl) dtEl.textContent = getDayOverlay().label;
   // Happy indicator
   const happyEl = document.getElementById('happy-hud');
   if (gs.cat.happyFrames > 0) {
@@ -2772,15 +4443,10 @@ function updateHUD() {
   }
 }
 
-function updateDiffBadge() {
-  const b=document.getElementById('diff-badge-hud'); b.className=difficulty;
-  b.textContent={easy:'🌸',normal:'⭐',hard:'🔥',paws:'🐾'}[difficulty];
-}
 
 function showGameOver() {
   stopMusic();
   document.getElementById('go-name').textContent=`${catName} got lost… 😿`;
-  document.getElementById('go-score').textContent=`⭐ Score: ${gs.score}`;
   document.getElementById('hud').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='none';
   showScreen('gameover-screen');
@@ -2793,7 +4459,6 @@ function showLevelComplete() {
   document.getElementById('lc-emoji').textContent=def.icon;
   document.getElementById('lc-title').textContent=currentLevel===3?'🎊 All Done!':'Level Complete!';
   document.getElementById('lc-desc').textContent=def.completeTxt;
-  document.getElementById('lc-score').textContent=`⭐ Score: ${gs.score}`;
   document.getElementById('lc-next-btn').style.display=currentLevel<3?'':'none';
   document.getElementById('hud').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='none';
